@@ -9,7 +9,7 @@
         body {
             font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
             text-align: center;
-            background: url('https://images5.alphacoders.com/320/thumb-1920-320817.jpg') no-repeat center center fixed;
+            background: url('https://wallpaperaccess.com/full/1619208.jpg') no-repeat center center fixed; /* 可愛 chibi Avengers 背景 */
             background-size: cover;
             padding: 20px;
             margin: 0;
@@ -20,17 +20,16 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255, 255, 255, 0.88);
+            background: rgba(255, 255, 255, 0.85);
             z-index: -1;
         }
         .logo {
-            width: 240px;
+            width: 250px;
             margin: 15px auto;
         }
         h1 {
             color: #e62429;
-            font-size: 2.4em;
-            margin: 10px;
+            font-size: 2.5em;
             text-shadow: 2px 2px 4px #fff;
         }
         .instructions {
@@ -43,50 +42,78 @@
             display: inline-block;
             box-shadow: 0 6px 12px rgba(0,0,0,0.2);
         }
-        .row {
-            margin: 40px auto;
+        .full-sentence {
+            font-size: 2.2em;
+            margin: 40px;
+            letter-spacing: 8px;
+            cursor: pointer;
             background: white;
-            padding: 30px;
-            border-radius: 25px;
+            padding: 20px;
+            border-radius: 20px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            max-width: 95%;
-            border: 6px solid #e62429;
-        }
-        .row h3 {
-            color: #e62429;
-            font-size: 1.8em;
-            margin-bottom: 20px;
-        }
-        .char-wrapper {
             display: inline-block;
-            margin: 20px;
+        }
+        .full-sentence span {
+            display: inline-block;
+            padding: 10px;
+            margin: 5px;
+            border: 3px solid #005f9e;
+            border-radius: 15px;
+            background: #f0f8ff;
+            transition: all 0.3s;
+        }
+        .full-sentence span:hover {
+            background: #ffd700;
+            transform: scale(1.2);
+        }
+        /* Modal 彈出視窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6);
+        }
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             text-align: center;
         }
-        .char-box {
-            width: 150px;
-            height: 150px;
-            border: 5px solid #005f9e;
-            background: #fff;
-            border-radius: 20px;
-            margin-bottom: 15px;
-        }
-        button {
-            padding: 14px 24px;
-            border: none;
-            border-radius: 40px;
-            font-size: 1.3em;
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
             font-weight: bold;
-            color: white;
-            margin: 0 10px;
-            box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
         }
-        .btn-look { background: #ffd700; color: #202020; }
-        .btn-write { background: #4CAF50; }
-        button:hover { transform: scale(1.15); transition: 0.3s; }
+        .char-display {
+            font-size: 4em;
+            margin: 20px;
+            color: #e62429;
+        }
+        #writer-box {
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            border: 5px solid #005f9e;
+            border-radius: 15px;
+            background: #fff;
+        }
+        .hero-img {
+            width: 200px;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
         @media (max-width: 600px) {
-            .char-box { width: 130px; height: 130px; }
-            button { padding: 12px 20px; font-size: 1.2em; }
-            .logo { width: 200px; }
+            #writer-box { width: 250px; height: 250px; }
+            .hero-img { width: 150px; }
         }
     </style>
 </head>
@@ -95,96 +122,109 @@
     <img src="https://www.freepnglogos.com/uploads/avengers-png-logo/avengers-logo-cliparts-for-download-avengers-clipart-avengers-13.png" alt="Avengers Logo" class="logo">
     <h1>🦸‍♂️ Marvel 英雄感謝卡練字冒險 🦸‍♀️</h1>
     <div class="instructions">
-        跟英雄一起練字！<br>
-        先按「👀 看示範」看怎麼寫<br>
-        再按「✍️ 自己寫」用手指描～ 你一定行！💪
+        先看完整句子～<br>
+        點不會的字，英雄就會教你寫！💪<br>
+        在彈出視窗按「👀 看示範」或「✍️ 自己寫」
     </div>
 
-    <div class="row">
-        <h3>🌟 第一關：發現樹葉！</h3>
-        <div id="line1"></div>
+    <div class="full-sentence">
+        啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。
     </div>
 
-    <div class="row">
-        <h3>🍁 第二關：樹葉好漂亮～</h3>
-        <div id="line2"></div>
-    </div>
-
-    <div class="row">
-        <h3>❤️ 第三關：做感謝卡</h3>
-        <div id="line3"></div>
-    </div>
-
-    <div class="row">
-        <h3>🎁 第四關：送給老師（完整版）</h3>
-        <div id="line4"></div>
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>英雄教你寫：</h2>
+            <div class="char-display" id="modal-char"></div>
+            <img class="hero-img" id="hero-image" src="" alt="Marvel Hero">
+            <div id="writer-box"></div>
+            <p style="font-size:1.2em; color:#e62429;">加油！你是最棒的小英雄！🌟</p>
+        </div>
     </div>
 
     <script>
-        const sentence1 = "啊我終於找到"; // 6字
-        const sentence2 = "一片最漂亮的樹葉了"; // 8字
-        const sentence3 = "它像一顆心又像老師的笑臉"; // 10字（含標點忽略）
-        const sentence4 = "我把樹葉貼在一張紙上再寫上祝福做成一張感謝卡送給我最愛的老師"; // 全句重點練習
-
-        function setupLine(containerId, text) {
-            const container = document.getElementById(containerId);
-            for (let i = 0; i < text.length; i++) {
-                const char = text[i];
-                if (char === ' ') continue; // 跳過空格
-                const uniqueId = containerId + '-' + i;
-                
-                const wrapper = document.createElement('div');
-                wrapper.className = 'char-wrapper';
-
-                const charDiv = document.createElement('div');
-                charDiv.id = uniqueId;
-                charDiv.className = 'char-box';
-
-                const btnAnimate = document.createElement('button');
-                btnAnimate.innerText = "👀 看示範";
-                btnAnimate.className = "btn-look";
-
-                const btnQuiz = document.createElement('button');
-                btnQuiz.innerText = "✍️ 自己寫";
-                btnQuiz.className = "btn-write";
-
-                wrapper.appendChild(charDiv);
-                wrapper.appendChild(document.createElement('br'));
-                wrapper.appendChild(btnAnimate);
-                wrapper.appendChild(btnQuiz);
-                container.appendChild(wrapper);
-
-                const writer = HanziWriter.create(uniqueId, char, {
-                    width: 150,
-                    height: 150,
-                    padding: 12,
-                    strokeColor: '#202020',
-                    radicalColor: '#e62429',
-                    showOutline: true,
-                    outlineColor: '#c0c0c0',
-                    drawingWidth: 24,
-                    strokeAnimationSpeed: 0.7,
-                    highlightOnComplete: true,
-                    quizStartStrokeColor: '#005f9e'
-                });
-
-                btnAnimate.onclick = () => writer.animateCharacter();
-                btnQuiz.onclick = () => writer.quiz({
-                    onComplete: (summary) => {
-                        if (summary.totalMistakes === 0) {
-                            alert("🦸‍♂️ 哇哇哇！超級英雄！完全正確！🌟🌟🌟\n太棒了！你是最厲害的英雄！");
-                        } else {
-                            alert("👍 好棒棒！再試一次就完美囉～💪\n英雄永不放棄！");
-                        }
-                    }
-                });
+        const fullText = "啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。";
+        
+        // 為每個字加 span 並綁定點擊
+        const sentenceDiv = document.querySelector('.full-sentence');
+        sentenceDiv.innerHTML = '';
+        for (let char of fullText) {
+            if (char === ' ' || /[\uFF01-\uFF5E]/.test(char)) { // 空格或標點直接顯示
+                sentenceDiv.innerHTML += char;
+                continue;
             }
+            const span = document.createElement('span');
+            span.textContent = char;
+            span.onclick = () => openModal(char);
+            sentenceDiv.appendChild(span);
         }
 
-        setupLine('line1', sentence1);
-        setupLine('line2', sentence2);
-        setupLine('line3', sentence3);
-        setupLine('line4', sentence4);
+        // Modal 相關
+        const modal = document.getElementById('modal');
+        const closeBtn = document.querySelector('.close');
+        const modalChar = document.getElementById('modal-char');
+        const writerBox = document.getElementById('writer-box');
+        const heroImg = document.getElementById('hero-image');
+
+        closeBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+
+        // 隨機選可愛 chibi Marvel 英雄圖（從公開可愛圖片）
+        const heroImages = [
+            'https://wallpaperaccess.com/full/1619210.jpg', // chibi Iron Man
+            'https://wallpaperaccess.com/full/1619212.jpg', // chibi Captain America
+            'https://wallpaperaccess.com/full/1619215.jpg', // chibi Spider-Man
+            'https://wallpaperaccess.com/full/1619220.jpg', // chibi Hulk
+            'https://wallpaperaccess.com/full/1619225.jpg', // chibi Thor
+            'https://wallpapers-clan.com/wp-content/uploads/2024/08/chibi-avengers-team-desktop-wallpaper-preview.jpg' // 群像
+        ];
+
+        function openModal(char) {
+            modalChar.textContent = char;
+            heroImg.src = heroImages[Math.floor(Math.random() * heroImages.length)]; // 隨機英雄陪練
+
+            // 清空舊的 writer
+            writerBox.innerHTML = '';
+            
+            const writer = HanziWriter.create('writer-box', char, {
+                width: 300,
+                height: 300,
+                padding: 15,
+                strokeColor: '#e62429',
+                radicalColor: '#005f9e',
+                showOutline: true,
+                drawingWidth: 28,
+                strokeAnimationSpeed: 0.8,
+                highlightOnComplete: true
+            });
+
+            // 加兩個大按鈕在 modal 裡
+            const btnContainer = document.createElement('div');
+            const btnAnimate = document.createElement('button');
+            btnAnimate.innerText = "👀 看示範";
+            btnAnimate.style = "padding:15px 30px; font-size:1.3em; margin:10px; background:#ffd700; color:#202020; border-radius:30px;";
+            btnAnimate.onclick = () => writer.animateCharacter();
+
+            const btnQuiz = document.createElement('button');
+            btnQuiz.innerText = "✍️ 自己寫";
+            btnQuiz.style = "padding:15px 30px; font-size:1.3em; margin:10px; background:#4CAF50; color:white; border-radius:30px;";
+            btnQuiz.onclick = () => writer.quiz({
+                onComplete: (summary) => {
+                    if (summary.totalMistakes === 0) {
+                        alert("🦸‍♂️ 哇！完全正確！英雄為你驕傲！🌟🌟🌟");
+                    } else {
+                        alert("👍 再試一次就完美囉～英雄陪你！💪");
+                    }
+                }
+            });
+
+            btnContainer.appendChild(btnAnimate);
+            btnContainer.appendChild(btnQuiz);
+            writerBox.parentNode.appendChild(btnContainer);
+
+            modal.style.display = 'block';
+        }
     </script>
 
 </body>
