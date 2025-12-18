@@ -8,19 +8,17 @@
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
         :root {
-            --stark-blue: #00a8ff; 
+            --stark-blue: #00a8ff;
             --marvel-red: #e62429;
             --hulk-green: #4caf50;
             --thor-gold: #ffd700;
             --dark-bg: #0b0e14;
             --panel-bg: rgba(20, 30, 48, 0.9);
         }
-
         body {
             font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
             background-color: var(--dark-bg);
-            /* Tech Grid Background */
-            background-image: 
+            background-image:
                 linear-gradient(rgba(0, 168, 255, 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 168, 255, 0.05) 1px, transparent 1px);
             background-size: 30px 30px;
@@ -29,7 +27,6 @@
             padding: 20px;
             text-align: center;
         }
-
         h1 {
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -37,15 +34,12 @@
             text-shadow: 0 0 10px var(--stark-blue);
             margin-bottom: 5px;
         }
-
         .mission-brief {
             color: var(--stark-blue);
             font-size: 0.9rem;
             margin-bottom: 30px;
             letter-spacing: 1px;
         }
-
-        /* The Sentence Container */
         .text-panel {
             background: var(--panel-bg);
             border: 1px solid var(--stark-blue);
@@ -57,7 +51,6 @@
             line-height: 2.8;
             text-align: left;
         }
-
         .char-btn {
             display: inline-block;
             font-size: 1.6rem;
@@ -73,7 +66,6 @@
             color: #ddd;
             position: relative;
         }
-
         .char-btn:hover {
             background: rgba(0, 168, 255, 0.3);
             border-color: var(--stark-blue);
@@ -82,7 +74,6 @@
             z-index: 10;
             color: white;
         }
-
         .char-btn.punct {
             border: none;
             cursor: default;
@@ -93,8 +84,6 @@
             background: transparent;
             box-shadow: none;
         }
-
-        /* --- MODAL (POP UP) --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -105,107 +94,92 @@
             align-items: center;
             backdrop-filter: blur(8px);
         }
-
         .modal-interface {
             width: 90%;
             max-width: 500px;
             background: #111;
             border: 2px solid var(--stark-blue);
             border-radius: 20px;
-            padding: 20px;
+            padding: 30px 20px 20px;
             position: relative;
             box-shadow: 0 0 50px rgba(0, 168, 255, 0.3);
             text-align: center;
             animation: interfaceBoot 0.3s ease-out;
         }
-
         @keyframes interfaceBoot {
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
         }
-
         .close-btn {
             position: absolute;
-            top: 15px; right: 20px;
+            top: 10px; right: 15px;
             color: #555;
-            font-size: 30px;
+            font-size: 35px;
             cursor: pointer;
-            line-height: 20px;
+            line-height: 1;
         }
         .close-btn:hover { color: var(--marvel-red); }
-
-        /* Writer Container */
         #writer-container {
             background: white;
             margin: 20px auto;
             border-radius: 15px;
-            position: relative;
             overflow: hidden;
             border: 4px solid #333;
         }
-
-        /* Buttons */
         .controls {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 20px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
-
         .btn {
-            padding: 12px 25px;
+            padding: 14px 30px;
             font-family: 'Orbitron', sans-serif;
             font-weight: bold;
             text-transform: uppercase;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             transition: 0.2s;
         }
-
         .btn-scan {
             background: #333;
             color: var(--thor-gold);
-            border: 1px solid var(--thor-gold);
+            border: 2px solid var(--thor-gold);
         }
         .btn-scan:hover { background: var(--thor-gold); color: black; }
-
         .btn-fight {
             background: var(--marvel-red);
             color: white;
             box-shadow: 0 0 15px rgba(230, 36, 41, 0.4);
         }
         .btn-fight:hover { background: #ff4d4d; transform: scale(1.05); }
-
-        /* --- THE HERO REWARD POPUP (Hidden by default) --- */
         #hero-reward-layer {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9);
-            display: none; /* Hidden */
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             border-radius: 18px;
             z-index: 10;
         }
-
         .reward-icon {
-            width: 150px;
-            height: 150px;
+            width: 180px;
+            height: 180px;
             margin-bottom: 20px;
             animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
         .reward-title {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 900;
             text-transform: uppercase;
             margin: 0;
             animation: slideUp 0.5s ease;
         }
-
         .reward-quote {
             font-family: "Noto Sans TC", sans-serif;
             font-size: 1.2rem;
@@ -213,7 +187,6 @@
             color: #ddd;
             font-style: italic;
         }
-
         @keyframes popIn {
             0% { transform: scale(0) rotate(-45deg); opacity: 0; }
             100% { transform: scale(1) rotate(0); opacity: 1; }
@@ -222,27 +195,20 @@
             0% { transform: translateY(20px); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
         }
-
-        /* SVG Styles */
         .svg-icon { width: 100%; height: 100%; }
-
     </style>
 </head>
 <body>
-
     <div style="margin-bottom: 20px;">
         <h1>S.H.I.E.L.D. HQ</h1>
         <div class="mission-brief">TARGET: DECODE & REWRITE TRANSMISSION</div>
     </div>
-
-    <div class="text-panel" id="text-stage">
-        </div>
+    <div class="text-panel" id="text-stage"></div>
 
     <div id="main-modal" class="modal-overlay">
         <div class="modal-interface">
             <div class="close-btn" onclick="closeModal()">×</div>
-            
-            <h3 id="modal-title" style="color:var(--stark-blue); margin:0;">INITIATING PROTOCOL...</h3>
+            <h3 id="modal-title" style="color:var(--stark-blue); margin:20px 0 10px;">INITIATING PROTOCOL...</h3>
             
             <div style="position: relative; width: fit-content; margin: 20px auto;">
                 <div id="writer-container"></div>
@@ -251,35 +217,144 @@
                     <div id="reward-icon-container" class="reward-icon"></div>
                     <div id="reward-text" class="reward-title"></div>
                     <div id="reward-sub" class="reward-quote"></div>
-                    <button class="btn btn-scan" style="margin-top:20px;" onclick="resetWriter()">REPLAY</button>
+                    <button class="btn btn-scan" style="margin-top:30px; padding:12px 30px;" onclick="resetWriter()">REPLAY MISSION</button>
                 </div>
             </div>
-
+            
             <div class="controls">
                 <button class="btn btn-scan" onclick="animateWriter()">👁️ ANALYZE</button>
                 <button class="btn btn-fight" onclick="quizWriter()">👊 ACTIVATE</button>
             </div>
             
-            <div id="status-bar" style="margin-top:15px; font-size:0.8rem; color:#666;">WAITING FOR AGENT INPUT...</div>
+            <div id="status-bar" style="margin-top:20px; font-size:0.9rem; color:#666;">WAITING FOR AGENT INPUT...</div>
         </div>
     </div>
 
     <script>
-        // 1. CONTENT
         const fullSentence = "啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。";
-        
-        // 2. HERO DATA (No external images, using inline SVGs)
+
         const heroes = [
-            {
-                name: "IRON MAN",
-                color: "#e62429",
-                quote: "I Love You 3000.",
-                sound: "JARVIS: 'Excellent.'",
-                svg: `<svg viewBox="0 0 100 100" class="svg-icon" fill="#e62429"><path d="M50 15 L80 30 L80 70 L50 85 L20 70 L20 30 Z" stroke="gold" stroke-width="3"/><circle cx="50" cy="50" r="15" fill="#fff" filter="drop-shadow(0 0 5px cyan)"/></svg>` // Arc Reactor style
-            },
-            {
-                name: "CAPTAIN AMERICA",
-                color: "#00a8ff",
-                quote: "I can do this all day!",
-                sound: "*SHIELD CLANG*",
-                svg: `<svg viewBox="0 0 100 100" class="svg-icon"><circle cx="50" cy="50" r="45" fill="#e62429"/><circle cx="50" cy="50" r="35" fill="#fff"/><circle cx="50" cy="50" r="25" fill="#e62429"/><circle cx="50" cy="50" r="15" fill="#00a8ff"/><path d="M50 38 L54 49 L65
+            { name: "IRON MAN", color: "#e62429", quote: "I Love You 3000.", sound: "JARVIS: 'Excellent.'",
+              svg: `<svg viewBox="0 0 100 100" class="svg-icon"><path d="M50 15 L80 30 L80 70 L50 85 L20 70 L20 30 Z" fill="none" stroke="gold" stroke-width="4"/><circle cx="50" cy="50" r="20" fill="#fff"/><circle cx="50" cy="50" r="12" fill="#00a8ff" filter="drop-shadow(0 0 8px cyan)"/></svg>` },
+            { name: "CAPTAIN AMERICA", color: "#00a8ff", quote: "I can do this all day!", sound: "*SHIELD CLANG*",
+              svg: `<svg viewBox="0 0 100 100" class="svg-icon"><circle cx="50" cy="50" r="45" fill="#e62429"/><circle cx="50" cy="50" r="35" fill="#fff"/><circle cx="50" cy="50" r="25" fill="#e62429"/><circle cx="50" cy="50" r="15" fill="#00a8ff"/><path d="M50 35 L54 48 L65 48 L56 56 L59 68 L50 62 L41 68 L44 56 L35 48 L46 48 Z" fill="#fff"/></svg>` },
+            { name: "SPIDER-MAN", color: "#e23636", quote: "Your friendly neighborhood Spider-Man!", sound: "*THWIP!*",
+              svg: `<svg viewBox="0 0 100 100" class="svg-icon"><circle cx="50" cy="50" r="45" fill="#e23636"/><path d="M20 20 L80 80 M80 20 L20 80" stroke="#000" stroke-width="4"/><circle cx="35" cy="35" r="8" fill="#000"/><circle cx="65" cy="35" r="8" fill="#000"/><path d="M30 50 Q50 60 70 50" stroke="#000" stroke-width="3" fill="none"/></svg>` },
+            { name: "THE HULK", color: "#4caf50", quote: "HULK SMASH!!", sound: "*ROAR*",
+              svg: `<svg viewBox="0 0 100 100" class="svg-icon"><rect x="15" y="25" width="70" height="50" rx="15" fill="#4caf50"/><circle cx="35" cy="45" r="8" fill="#111"/><circle cx="65" cy="45" r="8" fill="#111"/><path d="M30 70 Q50 80 70 70" stroke="#111" stroke-width="6" fill="none"/></svg>` },
+            { name: "THOR", color: "#ffd700", quote: "For Asgard!", sound: "*THUNDER CRACK*",
+              svg: `<svg viewBox="0 0 100 100" class="svg-icon"><path d="M50 10 L70 40 L60 40 L60 70 L40 70 L40 40 L30 40 Z" fill="#ffd700" stroke="#fff" stroke-width="3"/><circle cx="50" cy="30" r="8" fill="#fff"/></svg>` }
+        ];
+
+        let writer = null;
+
+        const stage = document.getElementById('text-stage');
+        for (let char of fullSentence) {
+            const span = document.createElement('span');
+            span.innerText = char;
+            if (/[，。！\s]/.test(char)) {
+                span.className = 'char-btn punct';
+            } else {
+                span.className = 'char-btn';
+                span.onclick = () => openModal(char);
+            }
+            stage.appendChild(span);
+        }
+
+        function openModal(char) {
+            const modal = document.getElementById('main-modal');
+            const container = document.getElementById('writer-container');
+            const rewardLayer = document.getElementById('hero-reward-layer');
+
+            const size = Math.min(window.innerWidth * 0.75, 400); // 更大一點
+            container.style.width = size + 'px';
+            container.style.height = size + 'px';
+
+            container.innerHTML = '';
+            rewardLayer.style.display = 'none';
+
+            document.getElementById('modal-title').innerText = 'TARGET: ' + char;
+            document.getElementById('status-bar').innerText = 'DATA LOADED.';
+            document.getElementById('status-bar').style.color = '#666';
+
+            modal.style.display = 'flex';
+
+            writer = HanziWriter.create(container, char, {
+                width: size,
+                height: size,
+                padding: 20,
+                strokeColor: '#000',
+                radicalColor: '#e62429',
+                showOutline: true,
+                outlineColor: '#ccc',
+                drawingWidth: 30,
+                strokeAnimationSpeed: 1,
+                delayBetweenStrokes: 300,
+                highlightOnComplete: true
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('main-modal').style.display = 'none';
+            writer = null;
+        }
+
+        function animateWriter() {
+            if (writer) writer.animateCharacter();
+        }
+
+        function resetWriter() {
+            document.getElementById('hero-reward-layer').style.display = 'none';
+            if (writer) {
+                writer.cancelQuiz();
+                writer.showOutline();
+            }
+            document.getElementById('status-bar').innerText = 'RETRY READY.';
+        }
+
+        function quizWriter() {
+            if (!writer) return;
+            const status = document.getElementById('status-bar');
+            status.innerText = 'COMBAT MODE ENGAGED.';
+            status.style.color = var(--stark-blue);
+
+            writer.quiz({
+                onMistake: () => {
+                    status.innerText = '⚠️ ERROR DETECTED!';
+                    status.style.color = 'red';
+                },
+                onCorrectStroke: () => {
+                    status.innerText = 'GOOD!';
+                    status.style.color = '#4caf50';
+                },
+                onComplete: () => {
+                    status.innerText = 'MISSION SUCCESS!';
+                    status.style.color = '#ffd700';
+                    showHeroReward();
+                }
+            });
+        }
+
+        function showHeroReward() {
+            const hero = heroes[Math.floor(Math.random() * heroes.length)];
+            const layer = document.getElementById('hero-reward-layer');
+            const iconBox = document.getElementById('reward-icon-container');
+            const title = document.getElementById('reward-text');
+            const sub = document.getElementById('reward-sub');
+
+            iconBox.innerHTML = hero.svg;
+            title.innerText = hero.name;
+            title.style.color = hero.color;
+            sub.innerHTML = `"${hero.quote}"<br><br><small style='color:#888;'>${hero.sound}</small>`;
+
+            layer.style.display = 'flex';
+        }
+
+        window.onclick = function(e) {
+            if (e.target === document.getElementById('main-modal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
