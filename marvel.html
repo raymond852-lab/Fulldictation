@@ -68,39 +68,50 @@
         }
         #practice-area {
             margin: 50px auto;
-            padding: 30px;
+            padding: 40px;
             background: white;
-            border-radius: 25px;
+            border-radius: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            max-width: 90%;
+            max-width: 95%;
             display: none;
         }
         .char-display {
-            font-size: 5em;
-            margin: 20px;
+            font-size: 6em;
+            margin: 30px;
             color: #e62429;
         }
         #writer-box {
-            width: 350px;
-            height: 350px;
-            margin: 30px auto;
-            border: 6px solid #005f9e;
-            border-radius: 20px;
+            width: 400px;
+            height: 400px;
+            margin: 40px auto;
+            border: 8px solid #005f9e;
+            border-radius: 25px;
             background: #fff;
         }
         .hero-img {
-            width: 250px;
-            margin: 20px auto;
-            border-radius: 20px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            width: 300px;
+            margin: 30px auto;
+            border-radius: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
         #btn-container {
+            margin: 30px;
+        }
+        button {
+            padding: 20px 50px;
+            font-size: 1.8em;
             margin: 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
         }
         @media (max-width: 600px) {
-            #writer-box { width: 280px; height: 280px; }
-            .hero-img { width: 180px; }
+            #writer-box { width: 300px; height: 300px; }
+            .hero-img { width: 200px; }
             .full-sentence { font-size: 1.8em; letter-spacing: 4px; }
+            .char-display { font-size: 4em; }
+            button { padding: 15px 40px; font-size: 1.5em; }
         }
     </style>
 </head>
@@ -110,8 +121,8 @@
     <h1>🦸‍♂️ Marvel 英雄感謝卡練字冒險 🦸‍♀️</h1>
     <div class="instructions">
         先看完整句子～<br>
-        <strong>點藍框的字</strong>，下方就會出現英雄教你練字！💥<br>
-        按大按鈕看示範或自己描喔！
+        <strong>用手指點藍框的字</strong>，下方英雄就會教你寫！💥<br>
+        按大按鈕看示範或自己描～
     </div>
 
     <div class="full-sentence" id="sentence">
@@ -119,12 +130,12 @@
     </div>
 
     <div id="practice-area">
-        <h2 style="color:#e62429;">英雄教你寫：</h2>
+        <h2 style="color:#e62429; font-size:2em;">英雄教你寫這個字：</h2>
         <div class="char-display" id="practice-char"></div>
-        <img class="hero-img" id="hero-image" src="" alt="可愛 Marvel 英雄">
+        <img class="hero-img" id="hero-image" src="" alt="可愛 Marvel 英雄陪練">
         <div id="writer-box"></div>
         <div id="btn-container"></div>
-        <p style="font-size:1.4em; color:#e62429; margin:30px;">加油！你是最強的小英雄！🌟💪</p>
+        <p style="font-size:1.6em; color:#e62429; margin:40px;">加油！你是最強的小英雄！🌟💪</p>
     </div>
 
     <script>
@@ -149,14 +160,14 @@
         const heroImg = document.getElementById('hero-image');
         const btnContainer = document.getElementById('btn-container');
 
-        // 超可愛 chibi 英雄圖（穩定連結）
+        // 超可愛穩定 chibi 英雄圖（從 Etsy/Pinterest 等可靠來源）
         const heroImages = [
             'https://i.etsystatic.com/13622532/r/il/72c7d1/1619207948/il_fullxfull.1619207948_jzek.jpg', // 團隊萌圖
+            'https://i.etsystatic.com/39415386/r/il/611412/5952046630/il_fullxfull.5952046630_slhp.jpg', // Iron Man
             'https://i.etsystatic.com/20426389/r/il/6a9d9d/5097216659/il_1080xN.5097216659_qzg9.jpg', // Captain America
             'https://i.pinimg.com/736x/0e/8f/a2/0e8fa2a676ec9bbd5df92f62ea1f6544.jpg', // Spider-Man
             'https://i.etsystatic.com/20426389/r/il/341e96/4883436828/il_1080xN.4883436828_h7ri.jpg', // Hulk
-            'https://i.pinimg.com/736x/1f/e1/3d/1fe13ddfd5301dd4bdebae3b0b674e3e.jpg', // Thor
-            'https://i.etsystatic.com/39415386/r/il/611412/5952046630/il_570xN.5952046630_slhp.jpg' // Iron Man
+            'https://i.pinimg.com/736x/1f/e1/3d/1fe13ddfd5301dd4bdebae3b0b674e3e.jpg' // Thor
         ];
 
         function showPractice(char) {
@@ -167,31 +178,33 @@
             btnContainer.innerHTML = '';
 
             const writer = HanziWriter.create('writer-box', char, {
-                width: 350,
-                height: 350,
-                padding: 20,
+                width: 400,
+                height: 400,
+                padding: 30,
                 strokeColor: '#e62429',
                 radicalColor: '#005f9e',
                 showOutline: true,
-                drawingWidth: 30,
+                drawingWidth: 35,
                 strokeAnimationSpeed: 0.8,
                 highlightOnComplete: true
             });
 
             const btnAnimate = document.createElement('button');
             btnAnimate.innerText = "👀 看示範";
-            btnAnimate.style = "padding:18px 40px; font-size:1.6em; margin:15px; background:#ffd700; color:#202020; border-radius:40px; border:none; cursor:pointer;";
+            btnAnimate.style.background = '#ffd700';
+            btnAnimate.style.color = '#202020';
             btnAnimate.onclick = () => writer.animateCharacter();
 
             const btnQuiz = document.createElement('button');
             btnQuiz.innerText = "✍️ 自己寫";
-            btnQuiz.style = "padding:18px 40px; font-size:1.6em; margin:15px; background:#4CAF50; color:white; border-radius:40px; border:none; cursor:pointer;";
+            btnQuiz.style.background = '#4CAF50';
+            btnQuiz.style.color = 'white';
             btnQuiz.onclick = () => writer.quiz({
                 onComplete: (summary) => {
                     if (summary.totalMistakes === 0) {
-                        alert("🦸‍♂️ 哇！完全正確！英雄超開心！🌟🌟🌟");
+                        alert("🦸‍♂️ 哇！完全正確！英雄為你鼓掌！🌟🌟🌟");
                     } else {
-                        alert("👍 好棒！再試一次就完美啦～💪");
+                        alert("👍 超棒！再試一次就完美囉～💪");
                     }
                 }
             });
@@ -200,7 +213,7 @@
             btnContainer.appendChild(btnQuiz);
 
             practiceArea.style.display = 'block';
-            practiceArea.scrollIntoView({ behavior: 'smooth' }); // 自動滾到練習區
+            practiceArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     </script>
 
