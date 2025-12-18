@@ -3,219 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦸‍♂️ Marvel 英雄感謝卡練字冒險 🦸‍♀️</title>
+    <title>S.H.I.E.L.D. Linguistic Data Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
+        :root {
+            --hud-primary: #00a8ff; /* Cyan Glow */
+            --hud-alert: #e62429;   /* Marvel Red */
+            --hud-bg: #0b0e14;      /* Deep Dark Blue */
+            --hud-panel: rgba(16, 26, 40, 0.85);
+            --hud-grid: rgba(0, 168, 255, 0.1);
+        }
+
         body {
-            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
-            text-align: center;
-            background: url('https://wallpapers-clan.com/wp-content/uploads/2024/08/chibi-avengers-team-desktop-wallpaper-cover.jpg') no-repeat center center fixed;
-            background-size: cover;
-            padding: 20px;
+            font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
+            background-color: var(--hud-bg);
+            /* Tech Grid Background */
+            background-image: 
+                linear-gradient(var(--hud-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--hud-grid) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: white;
             margin: 0;
-            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        /* Scan Line Effect */
+        body::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: -1;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .header {
+            border-bottom: 2px solid var(--hud-alert);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: inline-block;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px var(--hud-primary);
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            color: var(--hud-primary);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        /* The Sentence Container - Tech Panel */
+        .data-panel {
+            background: var(--hud-panel);
+            border: 1px solid var(--hud-primary);
+            box-shadow: 0 0 15px rgba(0, 168, 255, 0.2);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 900px;
+            margin: 0 auto;
             position: relative;
         }
-        body::before {
+
+        /* Decorative Corners */
+        .data-panel::before, .data-panel::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255, 255, 255, 0.88);
-            z-index: -1;
-        }
-        .logo {
-            width: 250px;
-            margin: 15px auto;
-        }
-        h1 {
-            color: #e62429;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px #fff;
-        }
-        .instructions {
-            font-size: 1.5em;
-            margin: 30px;
-            padding: 20px;
-            background: rgba(0, 102, 204, 0.9);
-            color: white;
-            border-radius: 40px;
-            display: inline-block;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-        }
-        .full-sentence {
-            font-size: 2.2em;
-            margin: 40px auto;
-            letter-spacing: 8px;
-            background: white;
-            padding: 30px;
-            border-radius: 25px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            max-width: 95%;
-        }
-        .full-sentence span {
-            display: inline-block;
-            padding: 12px 18px;
-            margin: 8px;
-            border: 4px solid #005f9e;
-            border-radius: 20px;
-            background: #f0f8ff;
-            cursor: pointer;
+            width: 20px; height: 20px;
+            border: 2px solid var(--hud-primary);
             transition: all 0.3s;
         }
-        .full-sentence span:hover {
-            background: #ffd700;
-            transform: scale(1.3);
-        }
-        #practice-area {
-            margin: 50px auto;
-            padding: 40px;
-            background: white;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            max-width: 95%;
-            display: none;
-        }
-        .char-display {
-            font-size: 6em;
-            margin: 30px;
-            color: #e62429;
-        }
-        #writer-box {
-            width: 400px;
-            height: 400px;
-            margin: 40px auto;
-            border: 8px solid #005f9e;
-            border-radius: 25px;
-            background: #fff;
-        }
-        .hero-img {
-            width: 300px;
-            margin: 30px auto;
-            border-radius: 25px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-        #btn-container {
-            margin: 30px;
-        }
-        button {
-            padding: 20px 50px;
-            font-size: 1.8em;
-            margin: 20px;
-            border: none;
-            border-radius: 50px;
+        .data-panel::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .data-panel::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        .char-btn {
+            display: inline-block;
+            font-size: 1.8rem;
+            margin: 5px;
+            padding: 10px 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 5px;
             cursor: pointer;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            color: #ddd;
         }
-        @media (max-width: 600px) {
-            #writer-box { width: 300px; height: 300px; }
-            .hero-img { width: 200px; }
-            .full-sentence { font-size: 1.8em; letter-spacing: 4px; }
-            .char-display { font-size: 4em; }
-            button { padding: 15px 40px; font-size: 1.5em; }
+
+        .char-btn:hover {
+            background: rgba(0, 168, 255, 0.2);
+            border-color: var(--hud-primary);
+            box-shadow: 0 0 10px var(--hud-primary);
+            color: white;
+            transform: scale(1.1);
         }
+
+        /* The Modal Overlay (Pop-up) */
+        .modal-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--hud-bg);
+            border: 2px solid var(--hud-alert);
+            box-shadow: 0 0 30px rgba(230, 36, 41, 0.4);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 15px;
+            color: #666;
+            font-size: 24px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .close-btn:hover { color: var(--hud-alert); }
+
+        /* The Hanzi Writer Box */
+        #target-char-container {
+            background: white;
+            margin: 20px auto;
+            border-radius: 10px;
+            /* Center the SVG */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: 2px solid var(--hud-primary);
+            color: var(--hud-primary);
+            padding: 10px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            margin: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .action-btn:hover {
+            background: var(--hud-primary);
+            color: black;
+            box-shadow: 0 0 15px var(--hud-primary);
+        }
+
+        .action-btn.quiz {
+            border-color: var(--hud-alert);
+            color: var(--hud-alert);
+        }
+        .action-btn.quiz:hover {
+            background: var(--hud-alert);
+            color: white;
+            box-shadow: 0 0 15px var(--hud-alert);
+        }
+
+        .status-msg {
+            height: 30px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* Success Popup inside the modal */
+        #success-animation {
+            display: none;
+            color: #00ff00;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
     </style>
 </head>
 <body>
 
-    <img src="https://www.clipartmax.com/png/middle/181-1814369_avengers-logo-transparent-png-avengers-infinity-war-logo.png" alt="Avengers Logo" class="logo">
-    <h1>🦸‍♂️ Marvel 英雄感謝卡練字冒險 🦸‍♀️</h1>
-    <div class="instructions">
-        先看完整句子～<br>
-        <strong>用手指點藍框的字</strong>，下方英雄就會教你寫！💥<br>
-        按大按鈕看示範或自己描～
+    <div class="header">
+        <h1>S.H.I.E.L.D. Academy</h1>
+        <div class="subtitle">LINGUISTIC DATA PROCESSOR // LEVEL 1 ACCESS</div>
     </div>
 
-    <div class="full-sentence" id="sentence">
-        啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。
+    <div class="data-panel">
+        <p style="color:#888; text-transform:uppercase; font-size:0.8rem; margin-bottom:15px;">Target Data // Select a glyph to initiate protocol:</p>
+        <div id="sentence-container" style="line-height: 2.5;">
+            </div>
     </div>
 
-    <div id="practice-area">
-        <h2 style="color:#e62429; font-size:2em;">英雄教你寫這個字：</h2>
-        <div class="char-display" id="practice-char"></div>
-        <img class="hero-img" id="hero-image" src="" alt="可愛 Marvel 英雄陪練">
-        <div id="writer-box"></div>
-        <div id="btn-container"></div>
-        <p style="font-size:1.6em; color:#e62429; margin:40px;">加油！你是最強的小英雄！🌟💪</p>
+    <div id="practice-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">×</span>
+            
+            <h2 style="color:var(--hud-primary); margin:0;">INITIATE TRAINING</h2>
+            <div style="font-size: 0.8rem; color: #666;">CHARACTER ANALYSIS ACTIVE</div>
+
+            <div id="target-char-container"></div>
+
+            <div class="controls">
+                <button class="action-btn" onclick="animateChar()">👁️ Analyze</button>
+                <button class="action-btn quiz" onclick="quizChar()">👊 Engage</button>
+            </div>
+
+            <div class="status-msg" id="status-text">WAITING FOR INPUT...</div>
+            <div id="success-animation">✨ MISSION ACCOMPLISHED ✨</div>
+        </div>
     </div>
 
     <script>
-        const fullText = "啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。";
+        // --- CONFIGURATION ---
+        const fullText = "啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。";
+        let writerInstance = null;
+
+        // --- INITIALIZATION ---
+        const container = document.getElementById('sentence-container');
         
-        const sentenceDiv = document.getElementById('sentence');
-        sentenceDiv.innerHTML = '';
+        // Build the sentence interactively
         for (let char of fullText) {
-            if (char === ' ' || /[，。！]/.test(char)) {
-                sentenceDiv.innerHTML += char;
-                continue;
+            // If punctuation, just print it
+            if (/[，。！\s]/.test(char)) {
+                const span = document.createElement('span');
+                span.innerText = char;
+                span.style.color = "#666";
+                span.style.margin = "0 5px";
+                container.appendChild(span);
+            } else {
+                // If character, make it a button
+                const btn = document.createElement('span');
+                btn.innerText = char;
+                btn.className = 'char-btn';
+                btn.onclick = () => openModal(char);
+                container.appendChild(btn);
             }
-            const span = document.createElement('span');
-            span.textContent = char;
-            span.onclick = () => showPractice(char);
-            sentenceDiv.appendChild(span);
         }
 
-        const practiceArea = document.getElementById('practice-area');
-        const practiceChar = document.getElementById('practice-char');
-        const writerBox = document.getElementById('writer-box');
-        const heroImg = document.getElementById('hero-image');
-        const btnContainer = document.getElementById('btn-container');
+        // --- MODAL FUNCTIONS ---
+        function openModal(char) {
+            const modal = document.getElementById('practice-modal');
+            const targetDiv = document.getElementById('target-char-container');
+            const statusText = document.getElementById('status-text');
+            const successText = document.getElementById('success-animation');
 
-        // 超可愛穩定 chibi 英雄圖（從 Etsy/Pinterest 等可靠來源）
-        const heroImages = [
-            'https://i.etsystatic.com/13622532/r/il/72c7d1/1619207948/il_fullxfull.1619207948_jzek.jpg', // 團隊萌圖
-            'https://i.etsystatic.com/39415386/r/il/611412/5952046630/il_fullxfull.5952046630_slhp.jpg', // Iron Man
-            'https://i.etsystatic.com/20426389/r/il/6a9d9d/5097216659/il_1080xN.5097216659_qzg9.jpg', // Captain America
-            'https://i.pinimg.com/736x/0e/8f/a2/0e8fa2a676ec9bbd5df92f62ea1f6544.jpg', // Spider-Man
-            'https://i.etsystatic.com/20426389/r/il/341e96/4883436828/il_1080xN.4883436828_h7ri.jpg', // Hulk
-            'https://i.pinimg.com/736x/1f/e1/3d/1fe13ddfd5301dd4bdebae3b0b674e3e.jpg' // Thor
-        ];
+            // Reset UI
+            modal.style.display = 'flex';
+            targetDiv.innerHTML = ''; // Clear previous character
+            statusText.innerText = "SYSTEM READY // WAITING FOR INPUT...";
+            successText.style.display = 'none';
 
-        function showPractice(char) {
-            practiceChar.textContent = char;
-            heroImg.src = heroImages[Math.floor(Math.random() * heroImages.length)];
+            // Calculate responsive size (max 300px, or smaller on phones)
+            const size = Math.min(window.innerWidth * 0.7, 300);
+            targetDiv.style.width = size + "px";
+            targetDiv.style.height = size + "px";
 
-            writerBox.innerHTML = '';
-            btnContainer.innerHTML = '';
-
-            const writer = HanziWriter.create('writer-box', char, {
-                width: 400,
-                height: 400,
-                padding: 30,
-                strokeColor: '#e62429',
-                radicalColor: '#005f9e',
+            // Initialize Hanzi Writer
+            writerInstance = HanziWriter.create('target-char-container', char, {
+                width: size,
+                height: size,
+                padding: 15,
+                strokeColor: '#000000', // Black ink
+                background: '#ffffff',  // White paper
+                radicalColor: '#e62429', // Marvel Red Radical
                 showOutline: true,
-                drawingWidth: 35,
-                strokeAnimationSpeed: 0.8,
+                outlineColor: '#ddd',
+                strokeAnimationSpeed: 1.5, // Faster tech feel
+                delayBetweenStrokes: 200,
+                drawingWidth: 20,
                 highlightOnComplete: true
             });
+        }
 
-            const btnAnimate = document.createElement('button');
-            btnAnimate.innerText = "👀 看示範";
-            btnAnimate.style.background = '#ffd700';
-            btnAnimate.style.color = '#202020';
-            btnAnimate.onclick = () => writer.animateCharacter();
+        function closeModal() {
+            document.getElementById('practice-modal').style.display = 'none';
+            // Clean up writer to save memory
+            writerInstance = null;
+        }
 
-            const btnQuiz = document.createElement('button');
-            btnQuiz.innerText = "✍️ 自己寫";
-            btnQuiz.style.background = '#4CAF50';
-            btnQuiz.style.color = 'white';
-            btnQuiz.onclick = () => writer.quiz({
-                onComplete: (summary) => {
-                    if (summary.totalMistakes === 0) {
-                        alert("🦸‍♂️ 哇！完全正確！英雄為你鼓掌！🌟🌟🌟");
-                    } else {
-                        alert("👍 超棒！再試一次就完美囉～💪");
-                    }
+        // --- ACTION FUNCTIONS ---
+        function animateChar() {
+            if(!writerInstance) return;
+            document.getElementById('status-text').innerText = "ANALYZING STROKE DATA...";
+            writerInstance.animateCharacter();
+        }
+
+        function quizChar() {
+            if(!writerInstance) return;
+            const statusText = document.getElementById('status-text');
+            const successText = document.getElementById('success-animation');
+            
+            statusText.innerText = "TRAINING MODE ENGAGED. TRACE THE PATTERN.";
+            successText.style.display = 'none';
+
+            writerInstance.quiz({
+                onMistake: function(strokeData) {
+                    statusText.innerText = "⚠️ ERROR DETECTED. RECALIBRATE.";
+                    statusText.style.color = "#e62429"; // Red
+                    
+                    // Simple shake effect
+                    const box = document.getElementById('target-char-container');
+                    box.style.transform = "translateX(5px)";
+                    setTimeout(() => box.style.transform = "translateX(0)", 100);
+                },
+                onCorrectStroke: function(strokeData) {
+                    statusText.innerText = "Target locked. Continue...";
+                    statusText.style.color = "#00a8ff"; // Blue
+                },
+                onComplete: function(summary) {
+                    statusText.innerText = "";
+                    successText.style.display = 'block';
+                    // Optional: Play sound here if you want
                 }
             });
-
-            btnContainer.appendChild(btnAnimate);
-            btnContainer.appendChild(btnQuiz);
-
-            practiceArea.style.display = 'block';
-            practiceArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // Close modal if clicking outside content
+        window.onclick = function(event) {
+            const modal = document.getElementById('practice-modal');
+            if (event.target == modal) {
+                closeModal();
+            }
         }
     </script>
-
 </body>
 </html>
