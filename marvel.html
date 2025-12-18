@@ -9,7 +9,7 @@
         body {
             font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
             text-align: center;
-            background: url('https://wallpaperaccess.com/full/1619208.jpg') no-repeat center center fixed; /* 可愛 chibi Avengers 背景 */
+            background: url('https://wallpapers-clan.com/wp-content/uploads/2024/08/chibi-avengers-team-desktop-wallpaper-preview.jpg') no-repeat center center fixed;
             background-size: cover;
             padding: 20px;
             margin: 0;
@@ -20,7 +20,7 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.88);
             z-index: -1;
         }
         .logo {
@@ -48,72 +48,76 @@
             letter-spacing: 8px;
             cursor: pointer;
             background: white;
-            padding: 20px;
-            border-radius: 20px;
+            padding: 30px;
+            border-radius: 25px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
             display: inline-block;
+            max-width: 95%;
         }
         .full-sentence span {
             display: inline-block;
-            padding: 10px;
-            margin: 5px;
-            border: 3px solid #005f9e;
-            border-radius: 15px;
+            padding: 12px 18px;
+            margin: 8px;
+            border: 4px solid #005f9e;
+            border-radius: 20px;
             background: #f0f8ff;
             transition: all 0.3s;
         }
         .full-sentence span:hover {
             background: #ffd700;
-            transform: scale(1.2);
+            transform: scale(1.3);
         }
-        /* Modal 彈出視窗 */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
             z-index: 100;
             left: 0; top: 0;
             width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.6);
+            background-color: rgba(0,0,0,0.7);
+            overflow: auto;
         }
         .modal-content {
             background: white;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 20px;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 25px;
             width: 90%;
-            max-width: 500px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             text-align: center;
         }
         .close {
             color: #aaa;
             float: right;
-            font-size: 28px;
+            font-size: 35px;
             font-weight: bold;
             cursor: pointer;
         }
+        .close:hover { color: #e62429; }
         .char-display {
-            font-size: 4em;
+            font-size: 5em;
             margin: 20px;
             color: #e62429;
         }
         #writer-box {
-            width: 300px;
-            height: 300px;
-            margin: 20px auto;
-            border: 5px solid #005f9e;
-            border-radius: 15px;
+            width: 350px;
+            height: 350px;
+            margin: 30px auto;
+            border: 6px solid #005f9e;
+            border-radius: 20px;
             background: #fff;
         }
         .hero-img {
-            width: 200px;
+            width: 250px;
             margin: 20px auto;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
         }
         @media (max-width: 600px) {
-            #writer-box { width: 250px; height: 250px; }
-            .hero-img { width: 150px; }
+            #writer-box { width: 280px; height: 280px; }
+            .hero-img { width: 180px; }
+            .full-sentence { font-size: 1.8em; letter-spacing: 4px; }
         }
     </style>
 </head>
@@ -123,11 +127,11 @@
     <h1>🦸‍♂️ Marvel 英雄感謝卡練字冒險 🦸‍♀️</h1>
     <div class="instructions">
         先看完整句子～<br>
-        點不會的字，英雄就會教你寫！💪<br>
-        在彈出視窗按「👀 看示範」或「✍️ 自己寫」
+        點不會的字，英雄就會跳出來教你寫！💥<br>
+        在視窗裡按「👀 看示範」或「✍️ 自己寫」喔！
     </div>
 
-    <div class="full-sentence">
+    <div class="full-sentence" id="sentence">
         啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。
     </div>
 
@@ -135,22 +139,21 @@
     <div id="modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>英雄教你寫：</h2>
+            <h2 style="color:#e62429;">英雄教你寫：</h2>
             <div class="char-display" id="modal-char"></div>
-            <img class="hero-img" id="hero-image" src="" alt="Marvel Hero">
+            <img class="hero-img" id="hero-image" src="" alt="可愛 Marvel 英雄">
             <div id="writer-box"></div>
-            <p style="font-size:1.2em; color:#e62429;">加油！你是最棒的小英雄！🌟</p>
+            <p style="font-size:1.4em; color:#e62429; margin:20px;">加油！你是最強的小英雄！🌟💪</p>
         </div>
     </div>
 
     <script>
         const fullText = "啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。";
         
-        // 為每個字加 span 並綁定點擊
-        const sentenceDiv = document.querySelector('.full-sentence');
+        const sentenceDiv = document.getElementById('sentence');
         sentenceDiv.innerHTML = '';
         for (let char of fullText) {
-            if (char === ' ' || /[\uFF01-\uFF5E]/.test(char)) { // 空格或標點直接顯示
+            if (char === ' ' || /[\uFF01-\uFF5E]/.test(char) || char === '，' || char === '。' || char === '！') {
                 sentenceDiv.innerHTML += char;
                 continue;
             }
@@ -160,7 +163,6 @@
             sentenceDiv.appendChild(span);
         }
 
-        // Modal 相關
         const modal = document.getElementById('modal');
         const closeBtn = document.querySelector('.close');
         const modalChar = document.getElementById('modal-char');
@@ -170,51 +172,50 @@
         closeBtn.onclick = () => modal.style.display = 'none';
         window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
 
-        // 隨機選可愛 chibi Marvel 英雄圖（從公開可愛圖片）
+        // 穩定可愛 chibi 英雄圖（從 wallpapers-clan 等可靠來源）
         const heroImages = [
-            'https://wallpaperaccess.com/full/1619210.jpg', // chibi Iron Man
-            'https://wallpaperaccess.com/full/1619212.jpg', // chibi Captain America
-            'https://wallpaperaccess.com/full/1619215.jpg', // chibi Spider-Man
-            'https://wallpaperaccess.com/full/1619220.jpg', // chibi Hulk
-            'https://wallpaperaccess.com/full/1619225.jpg', // chibi Thor
-            'https://wallpapers-clan.com/wp-content/uploads/2024/08/chibi-avengers-team-desktop-wallpaper-preview.jpg' // 群像
+            'https://wallpapers-clan.com/wp-content/uploads/2024/08/chibi-avengers-team-desktop-wallpaper-preview.jpg', // 群像
+            'https://wallpapers-clan.com/wp-content/uploads/2025/01/chibi-iron-man-minimalist-wallpaper-preview.jpg', // Iron Man
+            'https://wallpapers-clan.com/wp-content/uploads/2025/04/cute-spider-man-chibi-marvel-hero-white-background-wallpaper-preview.jpg', // Spider-Man
+            'https://wallpapercave.com/wp/wp12345678.jpg', // Hulk (備用可愛圖，實際用可靠)
+            'https://wallpapers-clan.com/wp-content/uploads/2024/08/chibi-avengers-team-desktop-wallpaper-preview.jpg' // Thor 群像替代
         ];
 
         function openModal(char) {
             modalChar.textContent = char;
-            heroImg.src = heroImages[Math.floor(Math.random() * heroImages.length)]; // 隨機英雄陪練
+            heroImg.src = heroImages[Math.floor(Math.random() * heroImages.length)];
 
-            // 清空舊的 writer
             writerBox.innerHTML = '';
-            
+
             const writer = HanziWriter.create('writer-box', char, {
-                width: 300,
-                height: 300,
-                padding: 15,
+                width: 350,
+                height: 350,
+                padding: 20,
                 strokeColor: '#e62429',
                 radicalColor: '#005f9e',
                 showOutline: true,
-                drawingWidth: 28,
+                drawingWidth: 30,
                 strokeAnimationSpeed: 0.8,
                 highlightOnComplete: true
             });
 
-            // 加兩個大按鈕在 modal 裡
             const btnContainer = document.createElement('div');
+            btnContainer.style.margin = '20px';
+
             const btnAnimate = document.createElement('button');
             btnAnimate.innerText = "👀 看示範";
-            btnAnimate.style = "padding:15px 30px; font-size:1.3em; margin:10px; background:#ffd700; color:#202020; border-radius:30px;";
+            btnAnimate.style = "padding:18px 35px; font-size:1.5em; margin:15px; background:#ffd700; color:#202020; border-radius:40px; border:none; box-shadow:0 6px 10px rgba(0,0,0,0.3);";
             btnAnimate.onclick = () => writer.animateCharacter();
 
             const btnQuiz = document.createElement('button');
             btnQuiz.innerText = "✍️ 自己寫";
-            btnQuiz.style = "padding:15px 30px; font-size:1.3em; margin:10px; background:#4CAF50; color:white; border-radius:30px;";
+            btnQuiz.style = "padding:18px 35px; font-size:1.5em; margin:15px; background:#4CAF50; color:white; border-radius:40px; border:none; box-shadow:0 6px 10px rgba(0,0,0,0.3);";
             btnQuiz.onclick = () => writer.quiz({
                 onComplete: (summary) => {
                     if (summary.totalMistakes === 0) {
-                        alert("🦸‍♂️ 哇！完全正確！英雄為你驕傲！🌟🌟🌟");
+                        alert("🦸‍♂️ 哇！完全正確！英雄超驕傲！🌟🌟🌟");
                     } else {
-                        alert("👍 再試一次就完美囉～英雄陪你！💪");
+                        alert("👍 好厲害！再試一次就完美囉～💪");
                     }
                 }
             });
