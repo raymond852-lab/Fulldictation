@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦸‍♂️ Marvel 英雄感謝卡練字冒險 🦸‍♀️</title>
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+    <style>
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            text-align: center;
+            background: url('https://images5.alphacoders.com/320/thumb-1920-320817.jpg') no-repeat center center fixed;
+            background-size: cover;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.88);
+            z-index: -1;
+        }
+        .logo {
+            width: 240px;
+            margin: 15px auto;
+        }
+        h1 {
+            color: #e62429;
+            font-size: 2.4em;
+            margin: 10px;
+            text-shadow: 2px 2px 4px #fff;
+        }
+        .instructions {
+            font-size: 1.5em;
+            margin: 30px;
+            padding: 20px;
+            background: rgba(0, 102, 204, 0.9);
+            color: white;
+            border-radius: 40px;
+            display: inline-block;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        .row {
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            max-width: 95%;
+            border: 6px solid #e62429;
+        }
+        .row h3 {
+            color: #e62429;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+        .char-wrapper {
+            display: inline-block;
+            margin: 20px;
+            text-align: center;
+        }
+        .char-box {
+            width: 150px;
+            height: 150px;
+            border: 5px solid #005f9e;
+            background: #fff;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 40px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white;
+            margin: 0 10px;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+        }
+        .btn-look { background: #ffd700; color: #202020; }
+        .btn-write { background: #4CAF50; }
+        button:hover { transform: scale(1.15); transition: 0.3s; }
+        @media (max-width: 600px) {
+            .char-box { width: 130px; height: 130px; }
+            button { padding: 12px 20px; font-size: 1.2em; }
+            .logo { width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <img src="https://www.freepnglogos.com/uploads/avengers-png-logo/avengers-logo-cliparts-for-download-avengers-clipart-avengers-13.png" alt="Avengers Logo" class="logo">
+    <h1>🦸‍♂️ Marvel 英雄感謝卡練字冒險 🦸‍♀️</h1>
+    <div class="instructions">
+        跟英雄一起練字！<br>
+        先按「👀 看示範」看怎麼寫<br>
+        再按「✍️ 自己寫」用手指描～ 你一定行！💪
+    </div>
+
+    <div class="row">
+        <h3>🌟 第一關：發現樹葉！</h3>
+        <div id="line1"></div>
+    </div>
+
+    <div class="row">
+        <h3>🍁 第二關：樹葉好漂亮～</h3>
+        <div id="line2"></div>
+    </div>
+
+    <div class="row">
+        <h3>❤️ 第三關：做感謝卡</h3>
+        <div id="line3"></div>
+    </div>
+
+    <div class="row">
+        <h3>🎁 第四關：送給老師（完整版）</h3>
+        <div id="line4"></div>
+    </div>
+
+    <script>
+        const sentence1 = "啊我終於找到"; // 6字
+        const sentence2 = "一片最漂亮的樹葉了"; // 8字
+        const sentence3 = "它像一顆心又像老師的笑臉"; // 10字（含標點忽略）
+        const sentence4 = "我把樹葉貼在一張紙上再寫上祝福做成一張感謝卡送給我最愛的老師"; // 全句重點練習
+
+        function setupLine(containerId, text) {
+            const container = document.getElementById(containerId);
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                if (char === ' ') continue; // 跳過空格
+                const uniqueId = containerId + '-' + i;
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'char-wrapper';
+
+                const charDiv = document.createElement('div');
+                charDiv.id = uniqueId;
+                charDiv.className = 'char-box';
+
+                const btnAnimate = document.createElement('button');
+                btnAnimate.innerText = "👀 看示範";
+                btnAnimate.className = "btn-look";
+
+                const btnQuiz = document.createElement('button');
+                btnQuiz.innerText = "✍️ 自己寫";
+                btnQuiz.className = "btn-write";
+
+                wrapper.appendChild(charDiv);
+                wrapper.appendChild(document.createElement('br'));
+                wrapper.appendChild(btnAnimate);
+                wrapper.appendChild(btnQuiz);
+                container.appendChild(wrapper);
+
+                const writer = HanziWriter.create(uniqueId, char, {
+                    width: 150,
+                    height: 150,
+                    padding: 12,
+                    strokeColor: '#202020',
+                    radicalColor: '#e62429',
+                    showOutline: true,
+                    outlineColor: '#c0c0c0',
+                    drawingWidth: 24,
+                    strokeAnimationSpeed: 0.7,
+                    highlightOnComplete: true,
+                    quizStartStrokeColor: '#005f9e'
+                });
+
+                btnAnimate.onclick = () => writer.animateCharacter();
+                btnQuiz.onclick = () => writer.quiz({
+                    onComplete: (summary) => {
+                        if (summary.totalMistakes === 0) {
+                            alert("🦸‍♂️ 哇哇哇！超級英雄！完全正確！🌟🌟🌟\n太棒了！你是最厲害的英雄！");
+                        } else {
+                            alert("👍 好棒棒！再試一次就完美囉～💪\n英雄永不放棄！");
+                        }
+                    }
+                });
+            }
+        }
+
+        setupLine('line1', sentence1);
+        setupLine('line2', sentence2);
+        setupLine('line3', sentence3);
+        setupLine('line4', sentence4);
+    </script>
+
+</body>
+</html>
