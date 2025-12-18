@@ -44,13 +44,12 @@
         }
         .full-sentence {
             font-size: 2.2em;
-            margin: 40px;
+            margin: 40px auto;
             letter-spacing: 8px;
             background: white;
             padding: 30px;
             border-radius: 25px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            display: inline-block;
             max-width: 95%;
         }
         .full-sentence span {
@@ -60,40 +59,22 @@
             border: 4px solid #005f9e;
             border-radius: 20px;
             background: #f0f8ff;
-            transition: all 0.3s;
             cursor: pointer;
+            transition: all 0.3s;
         }
         .full-sentence span:hover {
             background: #ffd700;
             transform: scale(1.3);
         }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0; top: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            overflow: auto;
-        }
-        .modal-content {
-            background: white;
-            margin: 5% auto;
+        #practice-area {
+            margin: 50px auto;
             padding: 30px;
+            background: white;
             border-radius: 25px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 90%;
+            display: none;
         }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 35px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close:hover { color: #e62429; }
         .char-display {
             font-size: 5em;
             margin: 20px;
@@ -113,11 +94,13 @@
             border-radius: 20px;
             box-shadow: 0 6px 15px rgba(0,0,0,0.3);
         }
+        #btn-container {
+            margin: 20px;
+        }
         @media (max-width: 600px) {
             #writer-box { width: 280px; height: 280px; }
             .hero-img { width: 180px; }
             .full-sentence { font-size: 1.8em; letter-spacing: 4px; }
-            .full-sentence span { padding: 10px 14px; margin: 6px; }
         }
     </style>
 </head>
@@ -127,23 +110,21 @@
     <h1>🦸‍♂️ Marvel 英雄感謝卡練字冒險 🦸‍♀️</h1>
     <div class="instructions">
         先看完整句子～<br>
-        <strong>點藍框的字</strong>，英雄就會跳出來教你寫！💥<br>
-        在視窗裡按大按鈕練習喔！
+        <strong>點藍框的字</strong>，下方就會出現英雄教你練字！💥<br>
+        按大按鈕看示範或自己描喔！
     </div>
 
     <div class="full-sentence" id="sentence">
         啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。
     </div>
 
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 style="color:#e62429;">英雄教你寫：</h2>
-            <div class="char-display" id="modal-char"></div>
-            <img class="hero-img" id="hero-image" src="" alt="可愛 Marvel 英雄">
-            <div id="writer-box"></div>
-            <p style="font-size:1.4em; color:#e62429; margin:20px;">加油！你是最強的小英雄！🌟💪</p>
-        </div>
+    <div id="practice-area">
+        <h2 style="color:#e62429;">英雄教你寫：</h2>
+        <div class="char-display" id="practice-char"></div>
+        <img class="hero-img" id="hero-image" src="" alt="可愛 Marvel 英雄">
+        <div id="writer-box"></div>
+        <div id="btn-container"></div>
+        <p style="font-size:1.4em; color:#e62429; margin:30px;">加油！你是最強的小英雄！🌟💪</p>
     </div>
 
     <script>
@@ -158,35 +139,32 @@
             }
             const span = document.createElement('span');
             span.textContent = char;
-            span.onclick = () => openModal(char);
+            span.onclick = () => showPractice(char);
             sentenceDiv.appendChild(span);
         }
 
-        const modal = document.getElementById('modal');
-        const closeBtn = document.querySelector('.close');
-        const modalChar = document.getElementById('modal-char');
+        const practiceArea = document.getElementById('practice-area');
+        const practiceChar = document.getElementById('practice-char');
         const writerBox = document.getElementById('writer-box');
         const heroImg = document.getElementById('hero-image');
+        const btnContainer = document.getElementById('btn-container');
 
-        closeBtn.onclick = () => modal.style.display = 'none';
-        window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
-
-        // 超可愛穩定 chibi 英雄圖陣列
+        // 超可愛 chibi 英雄圖（穩定連結）
         const heroImages = [
-            'https://i.pinimg.com/736x/f8/67/25/f86725f88e465f8faa9ff637668a38e3.jpg', // Baby Avengers 團隊
-            'https://wallpapers.com/images/hd/cute-marvel-ve4lbukt4pn51p12.jpg', // 可愛 Marvel
-            'https://i.etsystatic.com/13080583/r/il/f2b5bb/2386335460/il_fullxfull.2386335460_f4ec.jpg', // Chibi Iron Man
-            'https://i.etsystatic.com/20426389/r/il/6a9d9d/5097216659/il_fullxfull.5097216659_qzg9.jpg', // Chibi Captain America
-            'https://i.pinimg.com/736x/0e/8f/a2/0e8fa2a676ec9bbd5df92f62ea1f6544.jpg', // Chibi Spider-Man
-            'https://i.etsystatic.com/20426389/r/il/341e96/4883436828/il_1080xN.4883436828_h7ri.jpg', // Chibi Hulk
-            'https://i.etsystatic.com/39415386/r/il/6479bf/6000108283/il_570xN.6000108283_5t6z.jpg' // Chibi Thor
+            'https://i.etsystatic.com/13622532/r/il/72c7d1/1619207948/il_fullxfull.1619207948_jzek.jpg', // 團隊萌圖
+            'https://i.etsystatic.com/20426389/r/il/6a9d9d/5097216659/il_1080xN.5097216659_qzg9.jpg', // Captain America
+            'https://i.pinimg.com/736x/0e/8f/a2/0e8fa2a676ec9bbd5df92f62ea1f6544.jpg', // Spider-Man
+            'https://i.etsystatic.com/20426389/r/il/341e96/4883436828/il_1080xN.4883436828_h7ri.jpg', // Hulk
+            'https://i.pinimg.com/736x/1f/e1/3d/1fe13ddfd5301dd4bdebae3b0b674e3e.jpg', // Thor
+            'https://i.etsystatic.com/39415386/r/il/611412/5952046630/il_570xN.5952046630_slhp.jpg' // Iron Man
         ];
 
-        function openModal(char) {
-            modalChar.textContent = char;
+        function showPractice(char) {
+            practiceChar.textContent = char;
             heroImg.src = heroImages[Math.floor(Math.random() * heroImages.length)];
 
             writerBox.innerHTML = '';
+            btnContainer.innerHTML = '';
 
             const writer = HanziWriter.create('writer-box', char, {
                 width: 350,
@@ -199,9 +177,6 @@
                 strokeAnimationSpeed: 0.8,
                 highlightOnComplete: true
             });
-
-            const btnContainer = document.createElement('div');
-            btnContainer.style.marginTop = '20px';
 
             const btnAnimate = document.createElement('button');
             btnAnimate.innerText = "👀 看示範";
@@ -223,9 +198,9 @@
 
             btnContainer.appendChild(btnAnimate);
             btnContainer.appendChild(btnQuiz);
-            writerBox.parentNode.appendChild(btnContainer);
 
-            modal.style.display = 'block';
+            practiceArea.style.display = 'block';
+            practiceArea.scrollIntoView({ behavior: 'smooth' }); // 自動滾到練習區
         }
     </script>
 
