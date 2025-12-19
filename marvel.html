@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.H.I.E.L.D. Dictation Prep</title>
+    <title>S.H.I.E.L.D. Mission Trainer</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
@@ -19,112 +19,105 @@
             text-align: center;
         }
 
-        /* Hero HUD */
-        .hero-selector { margin: 15px 0; display: flex; justify-content: center; gap: 10px; }
-        .h-btn { 
-            border: 2px solid rgba(255,255,255,0.2); background: #1a1a1a; 
-            padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.3s;
+        /* Mission Control */
+        .mission-selector {
+            display: flex; justify-content: center; gap: 8px; margin: 15px 0; flex-wrap: wrap;
         }
-        .h-btn.active-im { border-color: var(--im-gold); background: var(--im-red); }
-        .h-btn.active-cap { border-color: white; background: var(--cap-blue); }
-        .h-btn img { width: 50px; height: 50px; display: block; }
+        .lvl-btn {
+            background: #222; color: #aaa; border: 1px solid #444;
+            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron';
+        }
+        .lvl-btn.active { background: #00a8ff; color: white; border-color: white; box-shadow: 0 0 10px #00a8ff; }
 
-        /* Paragraph Layout */
+        .clear-btn {
+            background: #444; color: #ff4444; border: 1px solid #ff4444;
+            padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-top: 10px; font-size: 0.7rem;
+        }
+
+        /* Board Styling */
         .mission-board {
-            background: rgba(20, 30, 45, 0.9); border: 2px solid #333;
-            padding: 20px; border-radius: 15px; max-width: 900px; margin: 0 auto;
-            text-align: left; line-height: 2.2;
+            background: rgba(20, 30, 45, 0.95); border: 2px solid #333;
+            padding: 25px; border-radius: 15px; max-width: 800px; margin: 0 auto;
+            min-height: 200px; line-height: 2.5;
         }
 
-        .word-unit {
-            display: inline-flex; flex-direction: column; align-items: center;
-            vertical-align: middle; margin: 5px;
-        }
-
+        .word-unit { display: inline-flex; flex-direction: column; align-items: center; margin: 5px; }
+        
         .char-tile {
-            width: 55px; height: 55px; line-height: 55px; text-align: center;
-            font-size: 1.8rem; background: #000; border: 1px solid #444;
-            border-radius: 8px; cursor: pointer; color: transparent; /* Hidden for memory */
-            transition: all 0.3s; position: relative;
+            width: 55px; height: 55px; line-height: 55px; font-size: 1.8rem;
+            background: #000; border: 1px solid #444; border-radius: 8px;
+            cursor: pointer; color: transparent; transition: 0.3s;
         }
-        .char-tile.revealed { color: #fff; border-color: var(--im-gold); }
-        .char-tile.mastered { border-color: #00ff00; background: rgba(0,255,0,0.1); }
+        .char-tile.revealed { color: #fff; border-color: #00a8ff; }
+        .char-tile.mastered { border-color: #00ff00; background: rgba(0,255,0,0.1); box-shadow: 0 0 10px rgba(0,255,0,0.3); }
 
-        .star-count { font-size: 10px; color: #ffd700; height: 12px; }
+        .star-label { font-size: 10px; color: #ffd700; height: 12px; }
 
-        /* Training Modal */
+        /* Modal HUD */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 100; justify-content: center; align-items: center;
         }
         .modal-box {
-            background: #111; border: 3px solid #444; padding: 20px;
-            border-radius: 20px; width: 340px; text-align: center;
+            background: #111; border: 3px solid #00a8ff; padding: 20px;
+            border-radius: 20px; width: 320px; text-align: center;
         }
 
-        #writer-canvas {
-            background: white; margin: 15px auto; border-radius: 10px;
-            width: 250px; height: 250px;
-        }
+        #writer-canvas { background: white; margin: 15px auto; border-radius: 10px; width: 220px; height: 220px; }
+        .mode-btn { width: 100%; margin: 5px 0; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .ghost-btn { background: #ff00ff; color: #fff; }
 
-        .mode-btn {
-            width: 100%; margin: 5px 0; padding: 12px; border: none;
-            border-radius: 8px; font-family: 'Orbitron'; cursor: pointer; font-weight: bold;
-        }
-        .guide-btn { background: #eee; color: #333; }
-        .ghost-btn { background: #ff00ff; color: #fff; box-shadow: 0 0 10px #ff00ff; }
-
-        .punc { color: #666; font-size: 1.5rem; margin: 0 5px; vertical-align: middle; }
+        .punc { color: #666; font-size: 1.5rem; margin: 0 5px; }
     </style>
 </head>
 <body>
 
-    <div class="hero-selector">
-        <div id="btn-im" class="h-btn active-im" onclick="switchHero('im')">
-            <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png">
-            <span style="font-size:10px; color:white;">TONY</span>
-        </div>
-        <div id="btn-cap" class="h-btn" onclick="switchHero('cap')">
-            <img src="https://cdn-icons-png.flaticon.com/512/6295/6295403.png">
-            <span style="font-size:10px; color:white;">STEVE</span>
-        </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; max-width:800px; margin:0 auto;">
+        <h2 id="hero-name" style="color:var(--im-gold); font-size:1.2rem;">S.H.I.E.L.D. MISSION</h2>
+        <button class="clear-btn" onclick="clearAllProgress()">⚠️ CLEAR MEMORY DATA</button>
     </div>
 
-    <h2 id="msg-brief" style="color:var(--im-gold); margin-bottom:5px;">MISSION BRIEFING</h2>
-    <p style="font-size:0.8rem; margin-bottom:20px;">Tap a data block to analyze. Use GHOST MODE to master the word for dictation.</p>
+    <div class="mission-selector" id="lvl-nav">
+        <button class="lvl-btn active" onclick="loadLevel(0)">LEVEL 1</button>
+        <button class="lvl-btn" onclick="loadLevel(1)">LEVEL 2</button>
+        <button class="lvl-btn" onclick="loadLevel(2)">LEVEL 3</button>
+        <button class="lvl-btn" onclick="loadLevel(3)">LEVEL 4</button>
+    </div>
 
     <div class="mission-board" id="board"></div>
 
     <div id="practice-modal" class="modal">
-        <div class="modal-box" id="modal-frame">
-            <h3 id="practice-title" style="margin:0; color:var(--im-gold);">ANALYZING...</h3>
+        <div class="modal-box">
+            <h3 id="p-title" style="margin:0; color:#00a8ff;">ANALYZING DATA</h3>
             <div id="writer-canvas"></div>
-            <button class="mode-btn guide-btn" onclick="runQuiz(true)">✍️ LV1: TRACE GUIDE</button>
-            <button class="mode-btn ghost-btn" onclick="runQuiz(false)">🧠 LV2: GHOST MODE (MEMORY)</button>
-            <p id="hint-text" style="font-size:0.7rem; color:#888; margin-top:10px;">Ghost mode hides the lines. Can you remember it?</p>
-            <button onclick="closeModal()" style="background:transparent; color:#666; border:none; margin-top:10px; cursor:pointer;">[ CANCEL MISSION ]</button>
+            <button class="mode-btn" onclick="runQuiz(true)">✍️ GUIDE MODE</button>
+            <button class="mode-btn ghost-btn" onclick="runQuiz(false)">🧠 GHOST MODE (MEMORY)</button>
+            <button onclick="closeModal()" style="background:transparent; color:#666; border:none; margin-top:10px;">[ CLOSE ]</button>
         </div>
     </div>
 
     <script>
-        const paragraph = "啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。";
-        let currentHero = 'im';
+        // Split paragraph into 4 levels
+        const missions = [
+            "啊，我終於找到一片漂亮的樹葉了！",
+            "它像一顆心，又像老師的笑臉。",
+            "我把樹葉貼在一張紙上，再寫上祝福，",
+            "做成一張感謝卡，送給我最愛的老師。"
+        ];
+
+        let currentLevel = 0;
         let writer = null;
-        let activeChar = '';
         let activeTile = null;
 
-        function switchHero(type) {
-            currentHero = type;
-            document.getElementById('btn-im').className = type === 'im' ? 'h-btn active-im' : 'h-btn';
-            document.getElementById('btn-cap').className = type === 'cap' ? 'h-btn active-cap' : 'h-btn';
-            document.getElementById('msg-brief').style.color = type === 'im' ? 'var(--im-gold)' : '#fff';
-            document.getElementById('practice-title').style.color = type === 'im' ? 'var(--im-gold)' : 'var(--cap-blue)';
-            document.getElementById('modal-frame').style.borderColor = type === 'im' ? 'var(--im-red)' : 'var(--cap-blue)';
-        }
-
-        function initBoard() {
+        function loadLevel(idx) {
+            currentLevel = idx;
+            // Update UI
+            document.querySelectorAll('.lvl-btn').forEach((b, i) => b.className = i === idx ? 'lvl-btn active' : 'lvl-btn');
+            
             const board = document.getElementById('board');
-            paragraph.split('').forEach((char, idx) => {
+            board.innerHTML = '';
+            
+            missions[idx].split('').forEach((char, i) => {
                 if (/[，。！、]/.test(char)) {
                     const s = document.createElement('span');
                     s.className = 'punc';
@@ -133,74 +126,62 @@
                 } else {
                     const unit = document.createElement('div');
                     unit.className = 'word-unit';
-                    
-                    const starDiv = document.createElement('div');
-                    starDiv.className = 'star-count';
-                    starDiv.id = `stars-${idx}`;
-                    
-                    const tile = document.createElement('div');
-                    tile.className = 'char-tile';
-                    tile.innerText = char;
-                    tile.onclick = () => handleTileClick(tile, char, idx);
-                    
-                    unit.appendChild(starDiv);
-                    unit.appendChild(tile);
+                    unit.innerHTML = `<div class="star-label" id="star-${idx}-${i}"></div>
+                                      <div class="char-tile" id="tile-${idx}-${i}" onclick="handleTile('${idx}-${i}', '${char}')">${char}</div>`;
                     board.appendChild(unit);
                 }
             });
         }
 
-        function handleTileClick(tile, char, idx) {
+        function handleTile(id, char) {
+            const tile = document.getElementById('tile-' + id);
             if (!tile.classList.contains('revealed')) {
                 tile.classList.add('revealed');
             } else {
-                openPractice(char, tile, idx);
+                openPractice(char, tile, id);
             }
         }
 
-        function openPractice(char, tile, idx) {
-            activeChar = char;
+        function openPractice(char, tile, id) {
             activeTile = tile;
             document.getElementById('practice-modal').style.display = 'flex';
             document.getElementById('writer-canvas').innerHTML = '';
-            
             writer = HanziWriter.create('writer-canvas', char, {
-                width: 250, height: 250, padding: 15,
-                strokeColor: '#202020',
-                radicalColor: currentHero === 'im' ? '#e62429' : '#0047ab',
-                drawingWidth: 25,
-                showOutline: true
+                width: 220, height: 220, padding: 15,
+                strokeColor: '#202020', radicalColor: '#e62429',
+                drawingWidth: 25, showOutline: true
             });
             writer.animateCharacter();
         }
 
         function runQuiz(isGuide) {
-            if (!isGuide) {
-                writer.hideOutline();
-                document.getElementById('hint-text').innerText = "SYSTEM OFFLINE: USE YOUR BRAIN!";
-            } else {
-                writer.showOutline();
-                document.getElementById('hint-text').innerText = "Follow the lights, kid.";
-            }
+            if (!isGuide) writer.hideOutline();
+            else writer.showOutline();
 
             writer.quiz({
                 onComplete: (summary) => {
+                    const starLabel = activeTile.parentElement.querySelector('.star-label');
                     if (!isGuide && summary.totalMistakes < 3) {
                         activeTile.classList.add('mastered');
-                        const starId = activeTile.id.replace('tile','stars');
-                        activeTile.parentElement.querySelector('.star-count').innerText = "⭐⭐⭐🏆";
-                        alert(currentHero === 'im' ? "Tony: Data uploaded to memory. Perfect!" : "Cap: I knew you could do it, Soldier!");
+                        starLabel.innerHTML = '⭐⭐⭐🏆';
                     } else if (isGuide) {
-                        activeTile.parentElement.querySelector('.star-count').innerText = "⭐";
+                        starLabel.innerHTML = '⭐';
                     }
                     setTimeout(closeModal, 500);
                 }
             });
         }
 
+        function clearAllProgress() {
+            if(confirm("Wipe all S.H.I.E.L.D. memory data?")) {
+                loadLevel(currentLevel);
+            }
+        }
+
         function closeModal() { document.getElementById('practice-modal').style.display = 'none'; }
 
-        initBoard();
+        // Start App
+        loadLevel(0);
     </script>
 </body>
 </html>
