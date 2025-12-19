@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>S.H.I.E.L.D. 繁體中文特訓</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+TC:wght@500;700&display=swap" rel="stylesheet">
+    <title>S.H.I.E.L.D. 英雄特訓</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
         :root {
@@ -19,12 +19,14 @@
             text-align: center; touch-action: manipulation;
         }
 
+        /* Hero Header */
         .hero-banner {
             display: flex; justify-content: space-around; align-items: center;
             background: rgba(255,255,255,0.05); border-radius: 15px; padding: 10px; margin-bottom: 10px;
         }
         .hero-banner img { width: 55px; height: 55px; }
 
+        /* Level Selector */
         .lvl-container {
             display: flex; overflow-x: auto; gap: 8px; padding: 10px 0;
             scrollbar-width: none; -webkit-overflow-scrolling: touch;
@@ -33,9 +35,10 @@
             flex: 0 0 auto; background: #222; color: #888; border: 2px solid #444;
             padding: 10px 15px; border-radius: 12px; font-weight: bold; font-family: 'Orbitron';
         }
-        .lvl-btn.active { background: var(--im-red); border-color: var(--im-gold); color: white; }
-        .lvl-btn.custom-tab { border-color: #00ff00; color: #00ff00; }
+        .lvl-btn.active { background: var(--cap-blue); border-color: white; color: white; }
+        .lvl-btn.custom-active { background: var(--im-red); border-color: var(--im-gold); color: white; }
 
+        /* Training Board */
         .mission-board {
             background: rgba(20, 30, 45, 0.95); border: 2px solid #333;
             padding: 20px 10px; border-radius: 20px; min-height: 250px;
@@ -52,17 +55,17 @@
         .char-tile.mastered { border-color: #00ff00; background: rgba(0,255,0,0.1); box-shadow: 0 0 10px #00ff00; }
         .star-label { font-size: 11px; height: 14px; margin-bottom: 2px; }
 
-        /* Parent Control Panel */
+        /* Parent Panel */
         .parent-panel {
             margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 15px;
-            border-top: 2px solid #444; text-align: left;
+            border: 2px dashed #00ff00; text-align: left;
         }
-        .parent-panel h4 { margin: 0 0 10px 0; font-size: 0.9rem; color: #00ff00; }
+        .parent-panel h4 { margin: 0 0 5px 0; color: #00ff00; font-size: 0.9rem; }
         #custom-input {
-            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444;
-            background: #000; color: white; margin-bottom: 10px; box-sizing: border-box;
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #444;
+            background: #000; color: white; margin-bottom: 10px; box-sizing: border-box; font-size: 1rem;
         }
-        .parent-btn { background: #00ff00; color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; width: 100%; }
+        .send-btn { background: #00ff00; color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: 900; width: 100%; cursor: pointer; }
 
         /* Modal */
         .modal {
@@ -74,7 +77,7 @@
             border-radius: 30px; width: 85%; max-width: 340px; text-align: center;
         }
         #writer-canvas { background: white; margin: 15px auto; border-radius: 15px; width: 230px; height: 230px; }
-        .mode-btn { width: 100%; margin: 8px 0; padding: 15px; border: none; border-radius: 15px; font-weight: 900; }
+        .mode-btn { width: 100%; margin: 8px 0; padding: 15px; border: none; border-radius: 15px; font-weight: 900; font-size: 1rem; }
         .ghost-btn { background: #ff00ff; color: white; }
     </style>
 </head>
@@ -84,58 +87,71 @@
         <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" alt="Iron Man">
         <div>
             <div style="font-size: 1rem; color:var(--im-gold); font-weight:900;">S.H.I.E.L.D. ACADEMY</div>
-            <div style="font-size: 0.6rem; color:#aaa;">DICTATION PROTOCOL</div>
+            <div id="mission-status" style="font-size: 0.7rem; color:#00ff00;">WAITING FOR COMMAND...</div>
         </div>
         <img src="https://cdn-icons-png.flaticon.com/512/6295/6295403.png" alt="Cap">
     </div>
 
     <div class="lvl-container" id="lvl-nav">
-        <button class="lvl-btn active" onclick="loadLevel(0)">LEVEL 1</button>
-        <button class="lvl-btn" onclick="loadLevel(1)">LEVEL 2</button>
-        <button class="lvl-btn" onclick="loadLevel(2)">LEVEL 3</button>
-        <button class="lvl-btn" onclick="loadLevel(3)">LEVEL 4</button>
-        <button class="lvl-btn custom-tab" id="custom-tab-btn" onclick="loadLevel(4)" style="display:none;">SPECIAL MISSION</button>
+        <button class="lvl-btn active" onclick="loadLevel(0)">MISSION 1</button>
+        <button class="lvl-btn" onclick="loadLevel(1)">MISSION 2</button>
+        <button class="lvl-btn" onclick="loadLevel(2)">MISSION 3</button>
+        <button class="lvl-btn" onclick="loadLevel(3)">MISSION 4</button>
+        <button class="lvl-btn" id="m5-btn" onclick="loadLevel(4)" style="border-color:#00ff00; color:#00ff00;">MISSION 5 (PARENT)</button>
     </div>
 
     <div class="mission-board" id="board"></div>
 
     <div class="parent-panel">
-        <h4>🛠 PARENT CONTROL: UPDATE MISSION</h4>
-        <input type="text" id="custom-input" placeholder="在這裡輸入新的練習句子...">
-        <button class="parent-btn" onclick="setCustomMission()">🚀 發送特訓任務 (SEND TO MISSION)</button>
-        <button onclick="clearAll()" style="background:transparent; color:#666; border:none; width:100%; margin-top:10px; font-size:0.7rem;">[ RESET ALL DATA ]</button>
+        <h4>🛠 父母控制台：設定 MISSION 5</h4>
+        <input type="text" id="custom-input" placeholder="輸入本週默寫單字...">
+        <button class="send-btn" onclick="saveCustomMission()">🚀 更新特訓任務 (UPDATE MISSION 5)</button>
+        <p style="font-size:0.6rem; color:#666; margin-top:10px;">* 輸入後，點擊 MISSION 5 按鈕即可練習。</p>
     </div>
 
     <div id="practice-modal" class="modal">
         <div class="modal-box">
-            <h2 id="char-name" style="margin:0; color:var(--im-gold);">字</h2>
+            <h2 id="char-name" style="margin:0; color:var(--im-gold); font-size:2rem;">字</h2>
             <div id="writer-canvas"></div>
             <button class="mode-btn" style="background:#eee;" onclick="runQuiz(true)">✍️ 描紅 (GUIDE)</button>
             <button class="mode-btn ghost-btn" onclick="runQuiz(false)">🧠 默寫 (GHOST MODE)</button>
-            <button onclick="closeModal()" style="background:transparent; color:#666; border:none; margin-top:10px;">[ CLOSE ]</button>
+            <button onclick="closeModal()" style="background:transparent; color:#666; border:none; margin-top:10px; font-weight:bold;">[ 離開 EXIT ]</button>
         </div>
     </div>
 
     <script>
-        const missions = [
+        const standardMissions = [
             "啊，我終於找到一片漂亮的樹葉了！",
             "它像一顆心，又像老師的笑臉。",
             "我把樹葉貼在一張紙上，再寫上祝福，",
             "做成一張感謝卡，送給我最愛的老師。"
         ];
-        let customMissionText = "";
+
         let writer = null;
         let activeTile = null;
         let currentLevel = 0;
 
+        // Initialize Mission 5 from Memory
+        let mission5Text = localStorage.getItem('shield_mission_5') || "請在下方輸入文字";
+
         function loadLevel(idx) {
             currentLevel = idx;
-            document.querySelectorAll('.lvl-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
-            
+            const btns = document.querySelectorAll('.lvl-btn');
+            btns.forEach((b, i) => {
+                b.classList.remove('active', 'custom-active');
+                if (i === idx) {
+                    if (i === 4) b.classList.add('custom-active');
+                    else b.classList.add('active');
+                }
+            });
+
+            const status = document.getElementById('mission-status');
+            status.innerText = (idx === 4) ? "IRON MAN: CUSTOM PROTOCOL ACTIVE" : "CAPTAIN AMERICA: MISSION " + (idx+1);
+            status.style.color = (idx === 4) ? "var(--im-gold)" : "#00a8ff";
+
             const board = document.getElementById('board');
             board.innerHTML = '';
-            
-            const text = (idx === 4) ? customMissionText : missions[idx];
+            const text = (idx === 4) ? mission5Text : standardMissions[idx];
             
             text.split('').forEach((char, i) => {
                 if (/[，。！、？]/.test(char)) {
@@ -153,13 +169,13 @@
             });
         }
 
-        function setCustomMission() {
-            const input = document.getElementById('custom-input').value;
-            if (input.trim() === "") return alert("請輸入文字！");
-            customMissionText = input;
-            document.getElementById('custom-tab-btn').style.display = 'block';
+        function saveCustomMission() {
+            const val = document.getElementById('custom-input').value;
+            if(!val.trim()) return alert("請輸入文字");
+            mission5Text = val;
+            localStorage.setItem('shield_mission_5', val);
+            alert("🚀 任務已更新！快叫孩子點擊 MISSION 5。");
             loadLevel(4);
-            alert("🚀 鋼鐵人：新任務已送達！點擊 'SPECIAL MISSION' 開始。");
         }
 
         function handleTile(tile, char) {
@@ -172,7 +188,7 @@
                 document.getElementById('char-name').innerText = char;
                 writer = HanziWriter.create('writer-canvas', char, {
                     width: 230, height: 230, padding: 15,
-                    strokeColor: '#202020', radicalColor: '#e62429',
+                    strokeColor: '#222', radicalColor: '#e62429',
                     drawingWidth: 28, showOutline: true
                 });
                 writer.animateCharacter();
@@ -196,9 +212,9 @@
             });
         }
 
-        function clearAll() { if(confirm("重置所有練習進度？")) loadLevel(currentLevel); }
         function closeModal() { document.getElementById('practice-modal').style.display = 'none'; }
 
+        // Boot up
         loadLevel(0);
     </script>
 </body>
