@@ -3,263 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.H.I.E.L.D. Linguistic Data Center</title>
+    <title>S.H.I.E.L.D. Training: Iron Man vs Cap</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
         :root {
-            --hud-primary: #00a8ff; /* Cyan Glow */
-            --hud-alert: #e62429;   /* Marvel Red */
-            --hud-bg: #0b0e14;      /* Deep Dark Blue */
-            --hud-panel: rgba(16, 26, 40, 0.85);
-            --hud-grid: rgba(0, 168, 255, 0.1);
+            --hud-primary: #00a8ff; 
+            --hud-accent: #ffd700;
+            --hud-bg: #0b0e14;
+            --ironman-red: #e62429;
+            --ironman-gold: #ffd700;
+            --cap-blue: #0047ab;
+            --cap-silver: #c0c0c0;
         }
 
         body {
             font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
             background-color: var(--hud-bg);
-            /* Tech Grid Background */
-            background-image: 
-                linear-gradient(var(--hud-grid) 1px, transparent 1px),
-                linear-gradient(90deg, var(--hud-grid) 1px, transparent 1px);
-            background-size: 40px 40px;
+            background-image: linear-gradient(rgba(0,168,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,168,255,0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
             color: white;
-            margin: 0;
-            padding: 20px;
+            margin: 0; padding: 20px;
             text-align: center;
-            overflow-x: hidden;
+            transition: all 0.5s ease;
         }
 
-        /* Scan Line Effect */
-        body::after {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: -1;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-        }
+        /* Hero Themes */
+        body.theme-ironman { --hud-primary: var(--ironman-gold); --hud-accent: var(--ironman-red); background-color: #2b0505; }
+        body.theme-cap { --hud-primary: #ffffff; --hud-accent: var(--cap-blue); background-color: #05162b; }
 
-        .header {
-            border-bottom: 2px solid var(--hud-alert);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+        .hero-selector {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50px;
             display: inline-block;
-            width: 100%;
-            max-width: 800px;
         }
 
-        h1 {
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: 0 0 10px var(--hud-primary);
-            margin: 0;
-            font-size: 1.8rem;
+        .hero-btn {
+            border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer;
+            font-family: 'Orbitron'; font-weight: bold; margin: 0 10px; transition: 0.3s;
         }
+        .btn-im { background: var(--ironman-red); color: white; border: 2px solid var(--ironman-gold); }
+        .btn-cap { background: var(--cap-blue); color: white; border: 2px solid white; }
+        .hero-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px white; }
 
-        .subtitle {
-            color: var(--hud-primary);
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-        }
-
-        /* The Sentence Container - Tech Panel */
+        .header { border-bottom: 2px solid var(--hud-primary); margin-bottom: 30px; padding-bottom: 10px; }
+        
         .data-panel {
-            background: var(--hud-panel);
+            background: rgba(0,0,0,0.6);
             border: 1px solid var(--hud-primary);
-            box-shadow: 0 0 15px rgba(0, 168, 255, 0.2);
-            border-radius: 10px;
-            padding: 30px;
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
+            box-shadow: 0 0 20px rgba(0, 168, 255, 0.2);
+            border-radius: 15px; padding: 25px;
+            max-width: 900px; margin: 0 auto;
         }
-
-        /* Decorative Corners */
-        .data-panel::before, .data-panel::after {
-            content: '';
-            position: absolute;
-            width: 20px; height: 20px;
-            border: 2px solid var(--hud-primary);
-            transition: all 0.3s;
-        }
-        .data-panel::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
-        .data-panel::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
 
         .char-btn {
-            display: inline-block;
-            font-size: 1.8rem;
-            margin: 5px;
-            padding: 10px 15px;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #ddd;
+            display: inline-block; font-size: 2rem; margin: 8px; padding: 12px;
+            border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+            cursor: pointer; transition: 0.2s; color: #fff; background: rgba(255,255,255,0.05);
         }
-
         .char-btn:hover {
-            background: rgba(0, 168, 255, 0.2);
-            border-color: var(--hud-primary);
-            box-shadow: 0 0 10px var(--hud-primary);
-            color: white;
-            transform: scale(1.1);
+            background: var(--hud-primary); color: #000;
+            box-shadow: 0 0 15px var(--hud-primary); transform: translateY(-5px);
         }
 
-        /* The Modal Overlay (Pop-up) */
+        /* Modal HUD Styling */
         .modal-overlay {
-            display: none; /* Hidden by default */
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 1000; justify-content: center; align-items: center;
         }
-
         .modal-content {
-            background: var(--hud-bg);
-            border: 2px solid var(--hud-alert);
-            box-shadow: 0 0 30px rgba(230, 36, 41, 0.4);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 90%;
-            width: 400px;
-            position: relative;
-            animation: slideIn 0.3s ease-out;
+            background: #000; border: 3px solid var(--hud-primary);
+            padding: 30px; border-radius: 20px; width: 350px; position: relative;
         }
 
-        @keyframes slideIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px; right: 15px;
-            color: #666;
-            font-size: 24px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .close-btn:hover { color: var(--hud-alert); }
-
-        /* The Hanzi Writer Box */
         #target-char-container {
-            background: white;
-            margin: 20px auto;
-            border-radius: 10px;
-            /* Center the SVG */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: #fff; margin: 20px auto; border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
+            border: 5px solid var(--hud-accent);
         }
 
         .action-btn {
-            background: transparent;
-            border: 2px solid var(--hud-primary);
-            color: var(--hud-primary);
-            padding: 10px 20px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
-            margin: 5px;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-weight: bold;
+            background: transparent; border: 2px solid var(--hud-primary);
+            color: var(--hud-primary); padding: 12px 20px;
+            font-family: 'Orbitron'; cursor: pointer; margin: 5px; border-radius: 5px;
         }
+        .action-btn:hover { background: var(--hud-primary); color: #000; }
 
-        .action-btn:hover {
-            background: var(--hud-primary);
-            color: black;
-            box-shadow: 0 0 15px var(--hud-primary);
-        }
-
-        .action-btn.quiz {
-            border-color: var(--hud-alert);
-            color: var(--hud-alert);
-        }
-        .action-btn.quiz:hover {
-            background: var(--hud-alert);
-            color: white;
-            box-shadow: 0 0 15px var(--hud-alert);
-        }
-
-        .status-msg {
-            height: 30px;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #ffd700;
-            font-weight: bold;
-        }
-
-        /* Success Popup inside the modal */
         #success-animation {
-            display: none;
-            color: #00ff00;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-top: 10px;
-            text-shadow: 0 0 10px #00ff00;
+            display: none; font-size: 1.2rem; margin-top: 15px;
+            color: #00ff00; text-shadow: 0 0 10px #00ff00;
         }
-
     </style>
 </head>
-<body>
+<body class="theme-ironman" id="body-main">
+
+    <div class="hero-selector">
+        <button class="hero-btn btn-im" onclick="setTheme('ironman')">🚀 TEAM IRON MAN</button>
+        <button class="hero-btn btn-cap" onclick="setTheme('cap')">🛡️ TEAM CAPTAIN AMERICA</button>
+    </div>
 
     <div class="header">
-        <h1>S.H.I.E.L.D. Academy</h1>
-        <div class="subtitle">LINGUISTIC DATA PROCESSOR // LEVEL 1 ACCESS</div>
+        <h1 id="hero-title">IRON MAN HUD</h1>
+        <div class="subtitle" id="hero-subtitle">SYSTEM: JARVIS v2.0 // LINGUISTIC ANALYSIS</div>
     </div>
 
     <div class="data-panel">
-        <p style="color:#888; text-transform:uppercase; font-size:0.8rem; margin-bottom:15px;">Target Data // Select a glyph to initiate protocol:</p>
-        <div id="sentence-container" style="line-height: 2.5;">
-            </div>
+        <div id="sentence-container" style="line-height: 3;"></div>
     </div>
 
     <div id="practice-modal" class="modal-overlay">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">×</span>
-            
-            <h2 style="color:var(--hud-primary); margin:0;">INITIATE TRAINING</h2>
-            <div style="font-size: 0.8rem; color: #666;">CHARACTER ANALYSIS ACTIVE</div>
-
+            <span style="position:absolute; right:20px; top:10px; cursor:pointer; font-size:25px;" onclick="closeModal()">×</span>
+            <h2 id="modal-title" style="margin:0; color:var(--hud-primary);">UPLOAD DATA</h2>
             <div id="target-char-container"></div>
-
             <div class="controls">
-                <button class="action-btn" onclick="animateChar()">👁️ Analyze</button>
-                <button class="action-btn quiz" onclick="quizChar()">👊 Engage</button>
+                <button class="action-btn" onclick="animateChar()">👁️ SCAN</button>
+                <button class="action-btn" onclick="quizChar()" style="border-color:var(--hud-accent); color:var(--hud-accent);">✍️ TRACE</button>
             </div>
-
-            <div class="status-msg" id="status-text">WAITING FOR INPUT...</div>
-            <div id="success-animation">✨ MISSION ACCOMPLISHED ✨</div>
+            <div id="status-text" style="margin-top:15px; font-size:0.8rem; color:var(--hud-primary);">READY...</div>
+            <div id="success-animation">✨ PROTOCOL COMPLETE ✨</div>
         </div>
     </div>
 
     <script>
-        // --- CONFIGURATION ---
         const fullText = "啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。";
         let writerInstance = null;
+        let currentTheme = 'ironman';
 
-        // --- INITIALIZATION ---
+        // 1. Theme Switching
+        function setTheme(hero) {
+            currentTheme = hero;
+            const body = document.getElementById('body-main');
+            const title = document.getElementById('hero-title');
+            const subtitle = document.getElementById('hero-subtitle');
+            
+            if(hero === 'ironman') {
+                body.className = 'theme-ironman';
+                title.innerText = "IRON MAN HUD";
+                subtitle.innerText = "SYSTEM: JARVIS v2.0 // STROKE PROTOCOL";
+            } else {
+                body.className = 'theme-cap';
+                title.innerText = "AVENGERS FIELD OPS";
+                subtitle.innerText = "AGENT: STEVE ROGERS // RECON DATA";
+            }
+        }
+
+        // 2. Build Sentence
         const container = document.getElementById('sentence-container');
-        
-        // Build the sentence interactively
         for (let char of fullText) {
-            // If punctuation, just print it
             if (/[，。！\s]/.test(char)) {
                 const span = document.createElement('span');
                 span.innerText = char;
-                span.style.color = "#666";
+                span.style.color = "rgba(255,255,255,0.3)";
                 span.style.margin = "0 5px";
                 container.appendChild(span);
             } else {
-                // If character, make it a button
                 const btn = document.createElement('span');
                 btn.innerText = char;
                 btn.className = 'char-btn';
@@ -268,90 +168,47 @@
             }
         }
 
-        // --- MODAL FUNCTIONS ---
+        // 3. Modal Logic
         function openModal(char) {
             const modal = document.getElementById('practice-modal');
             const targetDiv = document.getElementById('target-char-container');
-            const statusText = document.getElementById('status-text');
-            const successText = document.getElementById('success-animation');
-
-            // Reset UI
+            document.getElementById('success-animation').style.display = 'none';
+            document.getElementById('status-text').innerText = "WAITING FOR INPUT...";
+            
             modal.style.display = 'flex';
-            targetDiv.innerHTML = ''; // Clear previous character
-            statusText.innerText = "SYSTEM READY // WAITING FOR INPUT...";
-            successText.style.display = 'none';
+            targetDiv.innerHTML = ''; 
 
-            // Calculate responsive size (max 300px, or smaller on phones)
-            const size = Math.min(window.innerWidth * 0.7, 300);
-            targetDiv.style.width = size + "px";
-            targetDiv.style.height = size + "px";
-
-            // Initialize Hanzi Writer
+            const size = 250;
             writerInstance = HanziWriter.create('target-char-container', char, {
-                width: size,
-                height: size,
-                padding: 15,
-                strokeColor: '#000000', // Black ink
-                background: '#ffffff',  // White paper
-                radicalColor: '#e62429', // Marvel Red Radical
+                width: size, height: size, padding: 15,
+                strokeColor: '#202020',
+                radicalColor: currentTheme === 'ironman' ? '#e62429' : '#0047ab',
                 showOutline: true,
-                outlineColor: '#ddd',
-                strokeAnimationSpeed: 1.5, // Faster tech feel
-                delayBetweenStrokes: 200,
-                drawingWidth: 20,
-                highlightOnComplete: true
+                drawingWidth: 25 // Extra thick for kids
             });
         }
 
-        function closeModal() {
-            document.getElementById('practice-modal').style.display = 'none';
-            // Clean up writer to save memory
-            writerInstance = null;
-        }
+        function closeModal() { document.getElementById('practice-modal').style.display = 'none'; }
 
-        // --- ACTION FUNCTIONS ---
-        function animateChar() {
-            if(!writerInstance) return;
-            document.getElementById('status-text').innerText = "ANALYZING STROKE DATA...";
-            writerInstance.animateCharacter();
+        function animateChar() { 
+            document.getElementById('status-text').innerText = "SCANNING STROKE ORDER...";
+            writerInstance.animateCharacter(); 
         }
 
         function quizChar() {
-            if(!writerInstance) return;
-            const statusText = document.getElementById('status-text');
-            const successText = document.getElementById('success-animation');
-            
-            statusText.innerText = "TRAINING MODE ENGAGED. TRACE THE PATTERN.";
-            successText.style.display = 'none';
-
+            document.getElementById('status-text').innerText = "TRACE THE GLYPH...";
             writerInstance.quiz({
-                onMistake: function(strokeData) {
-                    statusText.innerText = "⚠️ ERROR DETECTED. RECALIBRATE.";
-                    statusText.style.color = "#e62429"; // Red
-                    
-                    // Simple shake effect
-                    const box = document.getElementById('target-char-container');
-                    box.style.transform = "translateX(5px)";
-                    setTimeout(() => box.style.transform = "translateX(0)", 100);
+                onMistake: () => {
+                    document.getElementById('status-text').innerText = "⚠️ RE-CALIBRATING...";
+                    document.getElementById('status-text').style.color = "red";
                 },
-                onCorrectStroke: function(strokeData) {
-                    statusText.innerText = "Target locked. Continue...";
-                    statusText.style.color = "#00a8ff"; // Blue
-                },
-                onComplete: function(summary) {
-                    statusText.innerText = "";
-                    successText.style.display = 'block';
-                    // Optional: Play sound here if you want
+                onComplete: (summary) => {
+                    document.getElementById('status-text').innerText = "";
+                    const success = document.getElementById('success-animation');
+                    success.style.display = 'block';
+                    success.innerText = currentTheme === 'ironman' ? "🚀 NICE JOB, BOSS!" : "🛡️ SOLDIER, WELL DONE!";
                 }
             });
-        }
-        
-        // Close modal if clicking outside content
-        window.onclick = function(event) {
-            const modal = document.getElementById('practice-modal');
-            if (event.target == modal) {
-                closeModal();
-            }
         }
     </script>
 </body>
