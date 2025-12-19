@@ -2,9 +2,9 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.H.I.E.L.D. Mission Trainer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>S.H.I.E.L.D. 繁體中文特訓</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+TC:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
         :root {
@@ -16,88 +16,109 @@
         body {
             font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
             background: var(--bg); color: white; margin: 0; padding: 10px;
-            text-align: center;
+            text-align: center; touch-action: manipulation; /* Faster touch on mobile */
         }
 
-        /* Mission Control */
-        .mission-selector {
-            display: flex; justify-content: center; gap: 8px; margin: 15px 0; flex-wrap: wrap;
+        /* Hero Header */
+        .hero-banner {
+            display: flex; justify-content: space-around; align-items: center;
+            background: rgba(255,255,255,0.05); border-radius: 15px; padding: 10px; margin-bottom: 10px;
+        }
+        .hero-banner img { width: 60px; height: 60px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
+
+        /* Level Tabs */
+        .lvl-container {
+            display: flex; overflow-x: auto; gap: 8px; padding: 10px 0;
+            scrollbar-width: none; -webkit-overflow-scrolling: touch;
         }
         .lvl-btn {
-            background: #222; color: #aaa; border: 1px solid #444;
-            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron';
+            flex: 0 0 auto; background: #222; color: #888; border: 2px solid #444;
+            padding: 10px 18px; border-radius: 12px; font-weight: bold; font-family: 'Orbitron';
         }
-        .lvl-btn.active { background: #00a8ff; color: white; border-color: white; box-shadow: 0 0 10px #00a8ff; }
+        .lvl-btn.active { background: var(--im-red); border-color: var(--im-gold); color: white; }
 
-        .clear-btn {
-            background: #444; color: #ff4444; border: 1px solid #ff4444;
-            padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-top: 10px; font-size: 0.7rem;
-        }
-
-        /* Board Styling */
+        /* Training Ground */
         .mission-board {
             background: rgba(20, 30, 45, 0.95); border: 2px solid #333;
-            padding: 25px; border-radius: 15px; max-width: 800px; margin: 0 auto;
-            min-height: 200px; line-height: 2.5;
+            padding: 20px 10px; border-radius: 20px; min-height: 250px;
+            display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start;
         }
 
-        .word-unit { display: inline-flex; flex-direction: column; align-items: center; margin: 5px; }
+        .word-unit { margin: 8px 5px; display: flex; flex-direction: column; align-items: center; }
         
         .char-tile {
-            width: 55px; height: 55px; line-height: 55px; font-size: 1.8rem;
-            background: #000; border: 1px solid #444; border-radius: 8px;
-            cursor: pointer; color: transparent; transition: 0.3s;
+            width: 65px; height: 65px; line-height: 65px; font-size: 2.2rem;
+            background: #000; border: 2px solid #444; border-radius: 12px;
+            cursor: pointer; color: transparent; transition: all 0.3s;
         }
         .char-tile.revealed { color: #fff; border-color: #00a8ff; }
-        .char-tile.mastered { border-color: #00ff00; background: rgba(0,255,0,0.1); box-shadow: 0 0 10px rgba(0,255,0,0.3); }
+        .char-tile.mastered { border-color: #00ff00; background: rgba(0,255,0,0.1); box-shadow: 0 0 10px #00ff00; }
 
-        .star-label { font-size: 10px; color: #ffd700; height: 12px; }
+        .star-label { font-size: 12px; height: 15px; margin-bottom: 2px; }
 
-        /* Modal HUD */
+        /* Mobile Modal */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 100; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center;
         }
         .modal-box {
-            background: #111; border: 3px solid #00a8ff; padding: 20px;
-            border-radius: 20px; width: 320px; text-align: center;
+            background: #111; border: 4px solid var(--im-red); padding: 25px;
+            border-radius: 30px; width: 85%; max-width: 350px; text-align: center;
         }
 
-        #writer-canvas { background: white; margin: 15px auto; border-radius: 10px; width: 220px; height: 220px; }
-        .mode-btn { width: 100%; margin: 5px 0; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .ghost-btn { background: #ff00ff; color: #fff; }
+        #writer-canvas { 
+            background: white; margin: 15px auto; border-radius: 15px; 
+            width: 240px; height: 240px; border: 5px solid #333;
+        }
 
-        .punc { color: #666; font-size: 1.5rem; margin: 0 5px; }
+        .mode-btn { 
+            width: 100%; margin: 8px 0; padding: 15px; border: none; 
+            border-radius: 15px; font-weight: 900; font-size: 1.1rem;
+        }
+        .ghost-btn { background: #ff00ff; color: white; box-shadow: 0 0 15px #ff00ff; }
+        .reset-btn { background: #444; color: #ff4444; border: 1px solid #ff4444; padding: 5px 15px; border-radius: 20px; margin-top: 15px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <div style="display:flex; justify-content:space-between; align-items:center; max-width:800px; margin:0 auto;">
-        <h2 id="hero-name" style="color:var(--im-gold); font-size:1.2rem;">S.H.I.E.L.D. MISSION</h2>
-        <button class="clear-btn" onclick="clearAllProgress()">⚠️ CLEAR MEMORY DATA</button>
+    <div class="hero-banner">
+        <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" alt="Iron Man">
+        <div>
+            <div style="font-size: 1.2rem; font-weight:900; color:var(--im-gold);">S.H.I.E.L.D.</div>
+            <div style="font-size: 0.7rem; color:#aaa;">DICTATION PROTOCOL</div>
+        </div>
+        <img src="https://cdn-icons-png.flaticon.com/512/6295/6295403.png" alt="Cap">
     </div>
 
-    <div class="mission-selector" id="lvl-nav">
-        <button class="lvl-btn active" onclick="loadLevel(0)">LEVEL 1</button>
-        <button class="lvl-btn" onclick="loadLevel(1)">LEVEL 2</button>
-        <button class="lvl-btn" onclick="loadLevel(2)">LEVEL 3</button>
-        <button class="lvl-btn" onclick="loadLevel(3)">LEVEL 4</button>
+    <div class="lvl-container" id="lvl-nav">
+        <button class="lvl-btn active" onclick="loadLevel(0)">MISSION 1</button>
+        <button class="lvl-btn" onclick="loadLevel(1)">MISSION 2</button>
+        <button class="lvl-btn" onclick="loadLevel(2)">MISSION 3</button>
+        <button class="lvl-btn" onclick="loadLevel(3)">MISSION 4</button>
     </div>
 
     <div class="mission-board" id="board"></div>
+    
+    <button class="reset-btn" onclick="clearAll()">⚠️ 重置進度 (RESET MEMORY)</button>
 
     <div id="practice-modal" class="modal">
         <div class="modal-box">
-            <h3 id="p-title" style="margin:0; color:#00a8ff;">ANALYZING DATA</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" style="width:40px;">
+                <span id="char-name" style="font-size:1.5rem; color:var(--im-gold);">特訓中</span>
+                <img src="https://cdn-icons-png.flaticon.com/512/6295/6295403.png" style="width:40px;">
+            </div>
+            
             <div id="writer-canvas"></div>
-            <button class="mode-btn" onclick="runQuiz(true)">✍️ GUIDE MODE</button>
-            <button class="mode-btn ghost-btn" onclick="runQuiz(false)">🧠 GHOST MODE (MEMORY)</button>
-            <button onclick="closeModal()" style="background:transparent; color:#666; border:none; margin-top:10px;">[ CLOSE ]</button>
+            
+            <button class="mode-btn" style="background:#eee;" onclick="runQuiz(true)">✍️ 描紅練習 (GUIDE)</button>
+            <button class="mode-btn ghost-btn" onclick="runQuiz(false)">🧠 默寫挑戰 (GHOST)</button>
+            <button onclick="closeModal()" style="background:transparent; color:#666; border:none; margin-top:10px; font-weight:bold;">[ 離開 EXIT ]</button>
         </div>
     </div>
 
     <script>
-        // Split paragraph into 4 levels
+        // TRADITIONAL CHINESE ONLY
         const missions = [
             "啊，我終於找到一片漂亮的樹葉了！",
             "它像一顆心，又像老師的笑臉。",
@@ -105,22 +126,20 @@
             "做成一張感謝卡，送給我最愛的老師。"
         ];
 
-        let currentLevel = 0;
         let writer = null;
         let activeTile = null;
+        let currentLevel = 0;
 
         function loadLevel(idx) {
             currentLevel = idx;
-            // Update UI
             document.querySelectorAll('.lvl-btn').forEach((b, i) => b.className = i === idx ? 'lvl-btn active' : 'lvl-btn');
-            
             const board = document.getElementById('board');
             board.innerHTML = '';
             
             missions[idx].split('').forEach((char, i) => {
                 if (/[，。！、]/.test(char)) {
                     const s = document.createElement('span');
-                    s.className = 'punc';
+                    s.style.cssText = "color:#666; font-size:2rem; line-height:85px; margin:0 5px;";
                     s.innerText = char;
                     board.appendChild(s);
                 } else {
@@ -138,18 +157,22 @@
             if (!tile.classList.contains('revealed')) {
                 tile.classList.add('revealed');
             } else {
-                openPractice(char, tile, id);
+                openPractice(char, tile);
             }
         }
 
-        function openPractice(char, tile, id) {
+        function openPractice(char, tile) {
             activeTile = tile;
             document.getElementById('practice-modal').style.display = 'flex';
             document.getElementById('writer-canvas').innerHTML = '';
+            document.getElementById('char-name').innerText = char;
+            
             writer = HanziWriter.create('writer-canvas', char, {
-                width: 220, height: 220, padding: 15,
-                strokeColor: '#202020', radicalColor: '#e62429',
-                drawingWidth: 25, showOutline: true
+                width: 240, height: 240, padding: 20,
+                strokeColor: '#1a1a1a', radicalColor: '#e62429',
+                drawingWidth: 28, // Thicker for mobile use
+                showOutline: true,
+                strokeAnimationSpeed: 1.5
             });
             writer.animateCharacter();
         }
@@ -167,20 +190,17 @@
                     } else if (isGuide) {
                         starLabel.innerHTML = '⭐';
                     }
-                    setTimeout(closeModal, 500);
+                    setTimeout(closeModal, 600);
                 }
             });
         }
 
-        function clearAllProgress() {
-            if(confirm("Wipe all S.H.I.E.L.D. memory data?")) {
-                loadLevel(currentLevel);
-            }
+        function clearAll() {
+            if(confirm("確定要重置所有記憶數據嗎？")) loadLevel(currentLevel);
         }
 
         function closeModal() { document.getElementById('practice-modal').style.display = 'none'; }
 
-        // Start App
         loadLevel(0);
     </script>
 </body>
