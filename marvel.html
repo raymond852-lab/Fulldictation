@@ -16,28 +16,26 @@
         body {
             font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
             background: var(--bg); color: white; margin: 0; padding: 10px;
-            text-align: center; touch-action: manipulation; /* Faster touch on mobile */
+            text-align: center; touch-action: manipulation;
         }
 
-        /* Hero Header */
         .hero-banner {
             display: flex; justify-content: space-around; align-items: center;
             background: rgba(255,255,255,0.05); border-radius: 15px; padding: 10px; margin-bottom: 10px;
         }
-        .hero-banner img { width: 60px; height: 60px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
+        .hero-banner img { width: 55px; height: 55px; }
 
-        /* Level Tabs */
         .lvl-container {
             display: flex; overflow-x: auto; gap: 8px; padding: 10px 0;
             scrollbar-width: none; -webkit-overflow-scrolling: touch;
         }
         .lvl-btn {
             flex: 0 0 auto; background: #222; color: #888; border: 2px solid #444;
-            padding: 10px 18px; border-radius: 12px; font-weight: bold; font-family: 'Orbitron';
+            padding: 10px 15px; border-radius: 12px; font-weight: bold; font-family: 'Orbitron';
         }
         .lvl-btn.active { background: var(--im-red); border-color: var(--im-gold); color: white; }
+        .lvl-btn.custom-tab { border-color: #00ff00; color: #00ff00; }
 
-        /* Training Ground */
         .mission-board {
             background: rgba(20, 30, 45, 0.95); border: 2px solid #333;
             padding: 20px 10px; border-radius: 20px; min-height: 250px;
@@ -45,38 +43,39 @@
         }
 
         .word-unit { margin: 8px 5px; display: flex; flex-direction: column; align-items: center; }
-        
         .char-tile {
-            width: 65px; height: 65px; line-height: 65px; font-size: 2.2rem;
+            width: 60px; height: 60px; line-height: 60px; font-size: 2rem;
             background: #000; border: 2px solid #444; border-radius: 12px;
             cursor: pointer; color: transparent; transition: all 0.3s;
         }
         .char-tile.revealed { color: #fff; border-color: #00a8ff; }
         .char-tile.mastered { border-color: #00ff00; background: rgba(0,255,0,0.1); box-shadow: 0 0 10px #00ff00; }
+        .star-label { font-size: 11px; height: 14px; margin-bottom: 2px; }
 
-        .star-label { font-size: 12px; height: 15px; margin-bottom: 2px; }
+        /* Parent Control Panel */
+        .parent-panel {
+            margin-top: 20px; padding: 15px; background: #1a1a1a; border-radius: 15px;
+            border-top: 2px solid #444; text-align: left;
+        }
+        .parent-panel h4 { margin: 0 0 10px 0; font-size: 0.9rem; color: #00ff00; }
+        #custom-input {
+            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444;
+            background: #000; color: white; margin-bottom: 10px; box-sizing: border-box;
+        }
+        .parent-btn { background: #00ff00; color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; width: 100%; }
 
-        /* Mobile Modal */
+        /* Modal */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center;
         }
         .modal-box {
-            background: #111; border: 4px solid var(--im-red); padding: 25px;
-            border-radius: 30px; width: 85%; max-width: 350px; text-align: center;
+            background: #111; border: 4px solid var(--im-red); padding: 20px;
+            border-radius: 30px; width: 85%; max-width: 340px; text-align: center;
         }
-
-        #writer-canvas { 
-            background: white; margin: 15px auto; border-radius: 15px; 
-            width: 240px; height: 240px; border: 5px solid #333;
-        }
-
-        .mode-btn { 
-            width: 100%; margin: 8px 0; padding: 15px; border: none; 
-            border-radius: 15px; font-weight: 900; font-size: 1.1rem;
-        }
-        .ghost-btn { background: #ff00ff; color: white; box-shadow: 0 0 15px #ff00ff; }
-        .reset-btn { background: #444; color: #ff4444; border: 1px solid #ff4444; padding: 5px 15px; border-radius: 20px; margin-top: 15px; font-size: 0.8rem; }
+        #writer-canvas { background: white; margin: 15px auto; border-radius: 15px; width: 230px; height: 230px; }
+        .mode-btn { width: 100%; margin: 8px 0; padding: 15px; border: none; border-radius: 15px; font-weight: 900; }
+        .ghost-btn { background: #ff00ff; color: white; }
     </style>
 </head>
 <body>
@@ -84,103 +83,105 @@
     <div class="hero-banner">
         <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" alt="Iron Man">
         <div>
-            <div style="font-size: 1.2rem; font-weight:900; color:var(--im-gold);">S.H.I.E.L.D.</div>
-            <div style="font-size: 0.7rem; color:#aaa;">DICTATION PROTOCOL</div>
+            <div style="font-size: 1rem; color:var(--im-gold); font-weight:900;">S.H.I.E.L.D. ACADEMY</div>
+            <div style="font-size: 0.6rem; color:#aaa;">DICTATION PROTOCOL</div>
         </div>
         <img src="https://cdn-icons-png.flaticon.com/512/6295/6295403.png" alt="Cap">
     </div>
 
     <div class="lvl-container" id="lvl-nav">
-        <button class="lvl-btn active" onclick="loadLevel(0)">MISSION 1</button>
-        <button class="lvl-btn" onclick="loadLevel(1)">MISSION 2</button>
-        <button class="lvl-btn" onclick="loadLevel(2)">MISSION 3</button>
-        <button class="lvl-btn" onclick="loadLevel(3)">MISSION 4</button>
+        <button class="lvl-btn active" onclick="loadLevel(0)">LEVEL 1</button>
+        <button class="lvl-btn" onclick="loadLevel(1)">LEVEL 2</button>
+        <button class="lvl-btn" onclick="loadLevel(2)">LEVEL 3</button>
+        <button class="lvl-btn" onclick="loadLevel(3)">LEVEL 4</button>
+        <button class="lvl-btn custom-tab" id="custom-tab-btn" onclick="loadLevel(4)" style="display:none;">SPECIAL MISSION</button>
     </div>
 
     <div class="mission-board" id="board"></div>
-    
-    <button class="reset-btn" onclick="clearAll()">⚠️ 重置進度 (RESET MEMORY)</button>
+
+    <div class="parent-panel">
+        <h4>🛠 PARENT CONTROL: UPDATE MISSION</h4>
+        <input type="text" id="custom-input" placeholder="在這裡輸入新的練習句子...">
+        <button class="parent-btn" onclick="setCustomMission()">🚀 發送特訓任務 (SEND TO MISSION)</button>
+        <button onclick="clearAll()" style="background:transparent; color:#666; border:none; width:100%; margin-top:10px; font-size:0.7rem;">[ RESET ALL DATA ]</button>
+    </div>
 
     <div id="practice-modal" class="modal">
         <div class="modal-box">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" style="width:40px;">
-                <span id="char-name" style="font-size:1.5rem; color:var(--im-gold);">特訓中</span>
-                <img src="https://cdn-icons-png.flaticon.com/512/6295/6295403.png" style="width:40px;">
-            </div>
-            
+            <h2 id="char-name" style="margin:0; color:var(--im-gold);">字</h2>
             <div id="writer-canvas"></div>
-            
-            <button class="mode-btn" style="background:#eee;" onclick="runQuiz(true)">✍️ 描紅練習 (GUIDE)</button>
-            <button class="mode-btn ghost-btn" onclick="runQuiz(false)">🧠 默寫挑戰 (GHOST)</button>
-            <button onclick="closeModal()" style="background:transparent; color:#666; border:none; margin-top:10px; font-weight:bold;">[ 離開 EXIT ]</button>
+            <button class="mode-btn" style="background:#eee;" onclick="runQuiz(true)">✍️ 描紅 (GUIDE)</button>
+            <button class="mode-btn ghost-btn" onclick="runQuiz(false)">🧠 默寫 (GHOST MODE)</button>
+            <button onclick="closeModal()" style="background:transparent; color:#666; border:none; margin-top:10px;">[ CLOSE ]</button>
         </div>
     </div>
 
     <script>
-        // TRADITIONAL CHINESE ONLY
         const missions = [
-            "啊，我終於找到一片漂亮的樹葉子！",
+            "啊，我終於找到一片漂亮的樹葉了！",
             "它像一顆心，又像老師的笑臉。",
             "我把樹葉貼在一張紙上，再寫上祝福，",
             "做成一張感謝卡，送給我最愛的老師。"
         ];
-
+        let customMissionText = "";
         let writer = null;
         let activeTile = null;
         let currentLevel = 0;
 
         function loadLevel(idx) {
             currentLevel = idx;
-            document.querySelectorAll('.lvl-btn').forEach((b, i) => b.className = i === idx ? 'lvl-btn active' : 'lvl-btn');
+            document.querySelectorAll('.lvl-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+            
             const board = document.getElementById('board');
             board.innerHTML = '';
             
-            missions[idx].split('').forEach((char, i) => {
-                if (/[，。！、]/.test(char)) {
+            const text = (idx === 4) ? customMissionText : missions[idx];
+            
+            text.split('').forEach((char, i) => {
+                if (/[，。！、？]/.test(char)) {
                     const s = document.createElement('span');
-                    s.style.cssText = "color:#666; font-size:2rem; line-height:85px; margin:0 5px;";
+                    s.style.cssText = "color:#666; font-size:1.8rem; line-height:80px; margin:0 5px;";
                     s.innerText = char;
                     board.appendChild(s);
                 } else {
                     const unit = document.createElement('div');
                     unit.className = 'word-unit';
-                    unit.innerHTML = `<div class="star-label" id="star-${idx}-${i}"></div>
-                                      <div class="char-tile" id="tile-${idx}-${i}" onclick="handleTile('${idx}-${i}', '${char}')">${char}</div>`;
+                    unit.innerHTML = `<div class="star-label"></div>
+                                      <div class="char-tile" onclick="handleTile(this, '${char}')">${char}</div>`;
                     board.appendChild(unit);
                 }
             });
         }
 
-        function handleTile(id, char) {
-            const tile = document.getElementById('tile-' + id);
+        function setCustomMission() {
+            const input = document.getElementById('custom-input').value;
+            if (input.trim() === "") return alert("請輸入文字！");
+            customMissionText = input;
+            document.getElementById('custom-tab-btn').style.display = 'block';
+            loadLevel(4);
+            alert("🚀 鋼鐵人：新任務已送達！點擊 'SPECIAL MISSION' 開始。");
+        }
+
+        function handleTile(tile, char) {
             if (!tile.classList.contains('revealed')) {
                 tile.classList.add('revealed');
             } else {
-                openPractice(char, tile);
+                activeTile = tile;
+                document.getElementById('practice-modal').style.display = 'flex';
+                document.getElementById('writer-canvas').innerHTML = '';
+                document.getElementById('char-name').innerText = char;
+                writer = HanziWriter.create('writer-canvas', char, {
+                    width: 230, height: 230, padding: 15,
+                    strokeColor: '#202020', radicalColor: '#e62429',
+                    drawingWidth: 28, showOutline: true
+                });
+                writer.animateCharacter();
             }
-        }
-
-        function openPractice(char, tile) {
-            activeTile = tile;
-            document.getElementById('practice-modal').style.display = 'flex';
-            document.getElementById('writer-canvas').innerHTML = '';
-            document.getElementById('char-name').innerText = char;
-            
-            writer = HanziWriter.create('writer-canvas', char, {
-                width: 240, height: 240, padding: 20,
-                strokeColor: '#1a1a1a', radicalColor: '#e62429',
-                drawingWidth: 28, // Thicker for mobile use
-                showOutline: true,
-                strokeAnimationSpeed: 1.5
-            });
-            writer.animateCharacter();
         }
 
         function runQuiz(isGuide) {
             if (!isGuide) writer.hideOutline();
             else writer.showOutline();
-
             writer.quiz({
                 onComplete: (summary) => {
                     const starLabel = activeTile.parentElement.querySelector('.star-label');
@@ -195,10 +196,7 @@
             });
         }
 
-        function clearAll() {
-            if(confirm("確定要重置所有記憶數據嗎？")) loadLevel(currentLevel);
-        }
-
+        function clearAll() { if(confirm("重置所有練習進度？")) loadLevel(currentLevel); }
         function closeModal() { document.getElementById('practice-modal').style.display = 'none'; }
 
         loadLevel(0);
