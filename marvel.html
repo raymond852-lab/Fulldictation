@@ -3,213 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.H.I.E.L.D. Training: Iron Man vs Cap</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <title>S.H.I.E.L.D. Memory Academy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
         :root {
-            --hud-primary: #00a8ff; 
-            --hud-accent: #ffd700;
-            --hud-bg: #0b0e14;
-            --ironman-red: #e62429;
-            --ironman-gold: #ffd700;
-            --cap-blue: #0047ab;
-            --cap-silver: #c0c0c0;
+            --im-red: #e62429; --im-gold: #ffd700;
+            --cap-blue: #0047ab; --cap-white: #ffffff;
+            --bg: #0b0e14; --panel: rgba(20, 30, 45, 0.95);
         }
 
         body {
             font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
-            background-color: var(--hud-bg);
-            background-image: linear-gradient(rgba(0,168,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,168,255,0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            color: white;
-            margin: 0; padding: 20px;
+            background: var(--bg); color: white; margin: 0; padding: 15px;
             text-align: center;
-            transition: all 0.5s ease;
         }
 
-        /* Hero Themes */
-        body.theme-ironman { --hud-primary: var(--ironman-gold); --hud-accent: var(--ironman-red); background-color: #2b0505; }
-        body.theme-cap { --hud-primary: #ffffff; --hud-accent: var(--cap-blue); background-color: #05162b; }
-
-        .hero-selector {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50px;
-            display: inline-block;
+        /* Hero Selection HUD */
+        .hero-nav { margin-bottom: 20px; }
+        .hero-btn { 
+            border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; 
+            font-weight: bold; margin: 5px; transition: 0.3s;
         }
+        .im-theme { background: var(--im-red); color: var(--im-gold); border: 2px solid var(--im-gold); }
+        .cap-theme { background: var(--cap-blue); color: white; border: 2px solid white; }
 
-        .hero-btn {
-            border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer;
-            font-family: 'Orbitron'; font-weight: bold; margin: 0 10px; transition: 0.3s;
-        }
-        .btn-im { background: var(--ironman-red); color: white; border: 2px solid var(--ironman-gold); }
-        .btn-cap { background: var(--cap-blue); color: white; border: 2px solid white; }
-        .hero-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px white; }
-
-        .header { border-bottom: 2px solid var(--hud-primary); margin-bottom: 30px; padding-bottom: 10px; }
-        
+        /* Memory Blocks */
         .data-panel {
-            background: rgba(0,0,0,0.6);
-            border: 1px solid var(--hud-primary);
-            box-shadow: 0 0 20px rgba(0, 168, 255, 0.2);
-            border-radius: 15px; padding: 25px;
-            max-width: 900px; margin: 0 auto;
+            background: var(--panel); border: 1px solid #444;
+            padding: 20px; border-radius: 15px; max-width: 800px; margin: 0 auto;
         }
-
         .char-btn {
-            display: inline-block; font-size: 2rem; margin: 8px; padding: 12px;
-            border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
-            cursor: pointer; transition: 0.2s; color: #fff; background: rgba(255,255,255,0.05);
+            display: inline-block; font-size: 1.8rem; margin: 5px; width: 50px; height: 50px;
+            line-height: 50px; background: #1a1a1a; border: 1px solid #00a8ff;
+            border-radius: 5px; cursor: pointer; color: transparent; /* Hidden by default for memory */
+            transition: 0.3s;
         }
-        .char-btn:hover {
-            background: var(--hud-primary); color: #000;
-            box-shadow: 0 0 15px var(--hud-primary); transform: translateY(-5px);
-        }
+        .char-btn.revealed { color: white; background: rgba(0, 168, 255, 0.2); }
 
-        /* Modal HUD Styling */
+        /* Modal HUD */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95); z-index: 1000; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
         }
         .modal-content {
-            background: #000; border: 3px solid var(--hud-primary);
-            padding: 30px; border-radius: 20px; width: 350px; position: relative;
+            background: #111; border: 3px solid #00a8ff; padding: 20px;
+            border-radius: 20px; width: 90%; max-width: 400px; position: relative;
         }
+
+        .chibi-img { width: 80px; height: 80px; margin-bottom: 10px; }
 
         #target-char-container {
-            background: #fff; margin: 20px auto; border-radius: 10px;
-            display: flex; justify-content: center; align-items: center;
-            border: 5px solid var(--hud-accent);
+            background: white; margin: 15px auto; border-radius: 10px;
+            width: 220px; height: 220px; display: flex; align-items: center; justify-content: center;
         }
 
+        .btn-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
         .action-btn {
-            background: transparent; border: 2px solid var(--hud-primary);
-            color: var(--hud-primary); padding: 12px 20px;
-            font-family: 'Orbitron'; cursor: pointer; margin: 5px; border-radius: 5px;
+            background: #222; color: #00a8ff; border: 2px solid #00a8ff;
+            padding: 10px; font-family: 'Orbitron'; cursor: pointer; border-radius: 5px; flex: 1 1 40%;
         }
-        .action-btn:hover { background: var(--hud-primary); color: #000; }
-
-        #success-animation {
-            display: none; font-size: 1.2rem; margin-top: 15px;
-            color: #00ff00; text-shadow: 0 0 10px #00ff00;
-        }
+        .action-btn.ghost { border-color: #ff00ff; color: #ff00ff; } /* Special Memory Mode */
+        
+        #success-msg { display: none; color: #00ff00; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
-<body class="theme-ironman" id="body-main">
+<body class="theme-im">
 
-    <div class="hero-selector">
-        <button class="hero-btn btn-im" onclick="setTheme('ironman')">🚀 TEAM IRON MAN</button>
-        <button class="hero-btn btn-cap" onclick="setTheme('cap')">🛡️ TEAM CAPTAIN AMERICA</button>
-    </div>
-
-    <div class="header">
-        <h1 id="hero-title">IRON MAN HUD</h1>
-        <div class="subtitle" id="hero-subtitle">SYSTEM: JARVIS v2.0 // LINGUISTIC ANALYSIS</div>
+    <div class="hero-nav">
+        <button class="hero-btn im-theme" onclick="switchHero('im')">IRON MAN MODE</button>
+        <button class="hero-btn cap-theme" onclick="switchHero('cap')">CAPTAIN AMERICA MODE</button>
     </div>
 
     <div class="data-panel">
-        <div id="sentence-container" style="line-height: 3;"></div>
+        <h3 id="hero-status">MISSION: MEMORIZE THE SCAN</h3>
+        <p style="font-size: 0.8rem; color: #888;">Tap a block to reveal the character, then tap again to practice.</p>
+        <div id="sentence-container"></div>
     </div>
 
     <div id="practice-modal" class="modal-overlay">
         <div class="modal-content">
-            <span style="position:absolute; right:20px; top:10px; cursor:pointer; font-size:25px;" onclick="closeModal()">×</span>
-            <h2 id="modal-title" style="margin:0; color:var(--hud-primary);">UPLOAD DATA</h2>
+            <span style="position:absolute; right:20px; top:10px; cursor:pointer;" onclick="closeModal()">×</span>
+            <img id="chibi-hero" class="chibi-img" src="" alt="Hero">
             <div id="target-char-container"></div>
-            <div class="controls">
-                <button class="action-btn" onclick="animateChar()">👁️ SCAN</button>
-                <button class="action-btn" onclick="quizChar()" style="border-color:var(--hud-accent); color:var(--hud-accent);">✍️ TRACE</button>
+            
+            <div class="btn-group">
+                <button class="action-btn" onclick="writerInstance.animateCharacter()">👁️ DEMO</button>
+                <button class="action-btn" onclick="startPractice(true)">✍️ GUIDE</button>
+                <button class="action-btn ghost" onclick="startPractice(false)">🧠 GHOST (MEMORY)</button>
             </div>
-            <div id="status-text" style="margin-top:15px; font-size:0.8rem; color:var(--hud-primary);">READY...</div>
-            <div id="success-animation">✨ PROTOCOL COMPLETE ✨</div>
+            
+            <div id="status-text" style="margin-top:10px; font-size: 0.8rem;">READY...</div>
+            <div id="success-msg">MISSION ACCOMPLISHED!</div>
         </div>
     </div>
 
     <script>
-        const fullText = "啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。";
+        const fullText = "我終於找到一片漂亮的樹葉"; // Shortened for focus
         let writerInstance = null;
-        let currentTheme = 'ironman';
-
-        // 1. Theme Switching
-        function setTheme(hero) {
-            currentTheme = hero;
-            const body = document.getElementById('body-main');
-            const title = document.getElementById('hero-title');
-            const subtitle = document.getElementById('hero-subtitle');
-            
-            if(hero === 'ironman') {
-                body.className = 'theme-ironman';
-                title.innerText = "IRON MAN HUD";
-                subtitle.innerText = "SYSTEM: JARVIS v2.0 // STROKE PROTOCOL";
-            } else {
-                body.className = 'theme-cap';
-                title.innerText = "AVENGERS FIELD OPS";
-                subtitle.innerText = "AGENT: STEVE ROGERS // RECON DATA";
+        let activeHero = 'im';
+        
+        // Chibi Images (Using placeholders - you can replace these URLs with any Chibi images you find)
+        const heros = {
+            im: {
+                name: "IRON MAN",
+                chibi: "https://cdn-icons-png.flaticon.com/512/6295/6295417.png", // Chibi Iron Man
+                color: "#e62429"
+            },
+            cap: {
+                name: "CAPTAIN AMERICA",
+                chibi: "https://cdn-icons-png.flaticon.com/512/6295/6295403.png", // Chibi Cap
+                color: "#0047ab"
             }
+        };
+
+        function switchHero(type) {
+            activeHero = type;
+            document.getElementById('hero-status').innerText = heros[type].name + " MEMORY PROTOCOL";
+            document.getElementById('hero-status').style.color = heros[type].color;
         }
 
-        // 2. Build Sentence
         const container = document.getElementById('sentence-container');
-        for (let char of fullText) {
-            if (/[，。！\s]/.test(char)) {
-                const span = document.createElement('span');
-                span.innerText = char;
-                span.style.color = "rgba(255,255,255,0.3)";
-                span.style.margin = "0 5px";
-                container.appendChild(span);
-            } else {
-                const btn = document.createElement('span');
-                btn.innerText = char;
-                btn.className = 'char-btn';
-                btn.onclick = () => openModal(char);
-                container.appendChild(btn);
-            }
-        }
+        fullText.split('').forEach(char => {
+            const btn = document.createElement('div');
+            btn.innerText = char;
+            btn.className = 'char-btn';
+            btn.onclick = () => {
+                if (!btn.classList.contains('revealed')) {
+                    btn.classList.add('revealed'); // First click: Reveal (Flashcard effect)
+                } else {
+                    openModal(char); // Second click: Practice
+                }
+            };
+            container.appendChild(btn);
+        });
 
-        // 3. Modal Logic
         function openModal(char) {
             const modal = document.getElementById('practice-modal');
-            const targetDiv = document.getElementById('target-char-container');
-            document.getElementById('success-animation').style.display = 'none';
-            document.getElementById('status-text').innerText = "WAITING FOR INPUT...";
-            
+            document.getElementById('chibi-hero').src = heros[activeHero].chibi;
+            document.getElementById('success-msg').style.display = 'none';
             modal.style.display = 'flex';
-            targetDiv.innerHTML = ''; 
-
-            const size = 250;
+            
+            document.getElementById('target-char-container').innerHTML = '';
             writerInstance = HanziWriter.create('target-char-container', char, {
-                width: size, height: size, padding: 15,
+                width: 200, height: 200, padding: 15,
                 strokeColor: '#202020',
-                radicalColor: currentTheme === 'ironman' ? '#e62429' : '#0047ab',
-                showOutline: true,
-                drawingWidth: 25 // Extra thick for kids
+                radicalColor: heros[activeHero].color,
+                drawingWidth: 20
+            });
+        }
+
+        function startPractice(showOutline) {
+            if (showOutline) {
+                writerInstance.showOutline();
+                document.getElementById('status-text').innerText = "Follow the guide...";
+            } else {
+                writerInstance.hideOutline(); // This forces memory!
+                document.getElementById('status-text').innerText = "🧠 GHOST MODE: Draw from memory!";
+            }
+            
+            writerInstance.quiz({
+                onComplete: () => {
+                    document.getElementById('success-msg').style.display = 'block';
+                    document.getElementById('status-text').innerText = "";
+                }
             });
         }
 
         function closeModal() { document.getElementById('practice-modal').style.display = 'none'; }
-
-        function animateChar() { 
-            document.getElementById('status-text').innerText = "SCANNING STROKE ORDER...";
-            writerInstance.animateCharacter(); 
-        }
-
-        function quizChar() {
-            document.getElementById('status-text').innerText = "TRACE THE GLYPH...";
-            writerInstance.quiz({
-                onMistake: () => {
-                    document.getElementById('status-text').innerText = "⚠️ RE-CALIBRATING...";
-                    document.getElementById('status-text').style.color = "red";
-                },
-                onComplete: (summary) => {
-                    document.getElementById('status-text').innerText = "";
-                    const success = document.getElementById('success-animation');
-                    success.style.display = 'block';
-                    success.innerText = currentTheme === 'ironman' ? "🚀 NICE JOB, BOSS!" : "🛡️ SOLDIER, WELL DONE!";
-                }
-            });
-        }
+        switchHero('im');
     </script>
 </body>
 </html>
