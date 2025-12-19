@@ -3,175 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.H.I.E.L.D. Memory Academy</title>
+    <title>S.H.I.E.L.D. Dictation Prep</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <style>
         :root {
             --im-red: #e62429; --im-gold: #ffd700;
             --cap-blue: #0047ab; --cap-white: #ffffff;
-            --bg: #0b0e14; --panel: rgba(20, 30, 45, 0.95);
+            --bg: #0b0e14;
         }
 
         body {
             font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
-            background: var(--bg); color: white; margin: 0; padding: 15px;
+            background: var(--bg); color: white; margin: 0; padding: 10px;
             text-align: center;
         }
 
-        /* Hero Selection HUD */
-        .hero-nav { margin-bottom: 20px; }
-        .hero-btn { 
-            border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; 
-            font-weight: bold; margin: 5px; transition: 0.3s;
+        /* Hero HUD */
+        .hero-selector { margin: 15px 0; display: flex; justify-content: center; gap: 10px; }
+        .h-btn { 
+            border: 2px solid rgba(255,255,255,0.2); background: #1a1a1a; 
+            padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.3s;
         }
-        .im-theme { background: var(--im-red); color: var(--im-gold); border: 2px solid var(--im-gold); }
-        .cap-theme { background: var(--cap-blue); color: white; border: 2px solid white; }
+        .h-btn.active-im { border-color: var(--im-gold); background: var(--im-red); }
+        .h-btn.active-cap { border-color: white; background: var(--cap-blue); }
+        .h-btn img { width: 50px; height: 50px; display: block; }
 
-        /* Memory Blocks */
-        .data-panel {
-            background: var(--panel); border: 1px solid #444;
-            padding: 20px; border-radius: 15px; max-width: 800px; margin: 0 auto;
+        /* Paragraph Layout */
+        .mission-board {
+            background: rgba(20, 30, 45, 0.9); border: 2px solid #333;
+            padding: 20px; border-radius: 15px; max-width: 900px; margin: 0 auto;
+            text-align: left; line-height: 2.2;
         }
-        .char-btn {
-            display: inline-block; font-size: 1.8rem; margin: 5px; width: 50px; height: 50px;
-            line-height: 50px; background: #1a1a1a; border: 1px solid #00a8ff;
-            border-radius: 5px; cursor: pointer; color: transparent; /* Hidden by default for memory */
-            transition: 0.3s;
-        }
-        .char-btn.revealed { color: white; background: rgba(0, 168, 255, 0.2); }
 
-        /* Modal HUD */
-        .modal-overlay {
+        .word-unit {
+            display: inline-flex; flex-direction: column; align-items: center;
+            vertical-align: middle; margin: 5px;
+        }
+
+        .char-tile {
+            width: 55px; height: 55px; line-height: 55px; text-align: center;
+            font-size: 1.8rem; background: #000; border: 1px solid #444;
+            border-radius: 8px; cursor: pointer; color: transparent; /* Hidden for memory */
+            transition: all 0.3s; position: relative;
+        }
+        .char-tile.revealed { color: #fff; border-color: var(--im-gold); }
+        .char-tile.mastered { border-color: #00ff00; background: rgba(0,255,0,0.1); }
+
+        .star-count { font-size: 10px; color: #ffd700; height: 12px; }
+
+        /* Training Modal */
+        .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.95); z-index: 100; justify-content: center; align-items: center;
         }
-        .modal-content {
-            background: #111; border: 3px solid #00a8ff; padding: 20px;
-            border-radius: 20px; width: 90%; max-width: 400px; position: relative;
+        .modal-box {
+            background: #111; border: 3px solid #444; padding: 20px;
+            border-radius: 20px; width: 340px; text-align: center;
         }
 
-        .chibi-img { width: 80px; height: 80px; margin-bottom: 10px; }
-
-        #target-char-container {
+        #writer-canvas {
             background: white; margin: 15px auto; border-radius: 10px;
-            width: 220px; height: 220px; display: flex; align-items: center; justify-content: center;
+            width: 250px; height: 250px;
         }
 
-        .btn-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-        .action-btn {
-            background: #222; color: #00a8ff; border: 2px solid #00a8ff;
-            padding: 10px; font-family: 'Orbitron'; cursor: pointer; border-radius: 5px; flex: 1 1 40%;
+        .mode-btn {
+            width: 100%; margin: 5px 0; padding: 12px; border: none;
+            border-radius: 8px; font-family: 'Orbitron'; cursor: pointer; font-weight: bold;
         }
-        .action-btn.ghost { border-color: #ff00ff; color: #ff00ff; } /* Special Memory Mode */
-        
-        #success-msg { display: none; color: #00ff00; font-weight: bold; margin-top: 10px; }
+        .guide-btn { background: #eee; color: #333; }
+        .ghost-btn { background: #ff00ff; color: #fff; box-shadow: 0 0 10px #ff00ff; }
+
+        .punc { color: #666; font-size: 1.5rem; margin: 0 5px; vertical-align: middle; }
     </style>
 </head>
-<body class="theme-im">
+<body>
 
-    <div class="hero-nav">
-        <button class="hero-btn im-theme" onclick="switchHero('im')">IRON MAN MODE</button>
-        <button class="hero-btn cap-theme" onclick="switchHero('cap')">CAPTAIN AMERICA MODE</button>
+    <div class="hero-selector">
+        <div id="btn-im" class="h-btn active-im" onclick="switchHero('im')">
+            <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png">
+            <span style="font-size:10px; color:white;">TONY</span>
+        </div>
+        <div id="btn-cap" class="h-btn" onclick="switchHero('cap')">
+            <img src="https://cdn-icons-png.flaticon.com/512/6295/6295403.png">
+            <span style="font-size:10px; color:white;">STEVE</span>
+        </div>
     </div>
 
-    <div class="data-panel">
-        <h3 id="hero-status">MISSION: MEMORIZE THE SCAN</h3>
-        <p style="font-size: 0.8rem; color: #888;">Tap a block to reveal the character, then tap again to practice.</p>
-        <div id="sentence-container"></div>
-    </div>
+    <h2 id="msg-brief" style="color:var(--im-gold); margin-bottom:5px;">MISSION BRIEFING</h2>
+    <p style="font-size:0.8rem; margin-bottom:20px;">Tap a data block to analyze. Use GHOST MODE to master the word for dictation.</p>
 
-    <div id="practice-modal" class="modal-overlay">
-        <div class="modal-content">
-            <span style="position:absolute; right:20px; top:10px; cursor:pointer;" onclick="closeModal()">×</span>
-            <img id="chibi-hero" class="chibi-img" src="" alt="Hero">
-            <div id="target-char-container"></div>
-            
-            <div class="btn-group">
-                <button class="action-btn" onclick="writerInstance.animateCharacter()">👁️ DEMO</button>
-                <button class="action-btn" onclick="startPractice(true)">✍️ GUIDE</button>
-                <button class="action-btn ghost" onclick="startPractice(false)">🧠 GHOST (MEMORY)</button>
-            </div>
-            
-            <div id="status-text" style="margin-top:10px; font-size: 0.8rem;">READY...</div>
-            <div id="success-msg">MISSION ACCOMPLISHED!</div>
+    <div class="mission-board" id="board"></div>
+
+    <div id="practice-modal" class="modal">
+        <div class="modal-box" id="modal-frame">
+            <h3 id="practice-title" style="margin:0; color:var(--im-gold);">ANALYZING...</h3>
+            <div id="writer-canvas"></div>
+            <button class="mode-btn guide-btn" onclick="runQuiz(true)">✍️ LV1: TRACE GUIDE</button>
+            <button class="mode-btn ghost-btn" onclick="runQuiz(false)">🧠 LV2: GHOST MODE (MEMORY)</button>
+            <p id="hint-text" style="font-size:0.7rem; color:#888; margin-top:10px;">Ghost mode hides the lines. Can you remember it?</p>
+            <button onclick="closeModal()" style="background:transparent; color:#666; border:none; margin-top:10px; cursor:pointer;">[ CANCEL MISSION ]</button>
         </div>
     </div>
 
     <script>
-        const fullText = "我終於找到一片漂亮的樹葉"; // Shortened for focus
-        let writerInstance = null;
-        let activeHero = 'im';
-        
-        // Chibi Images (Using placeholders - you can replace these URLs with any Chibi images you find)
-        const heros = {
-            im: {
-                name: "IRON MAN",
-                chibi: "https://cdn-icons-png.flaticon.com/512/6295/6295417.png", // Chibi Iron Man
-                color: "#e62429"
-            },
-            cap: {
-                name: "CAPTAIN AMERICA",
-                chibi: "https://cdn-icons-png.flaticon.com/512/6295/6295403.png", // Chibi Cap
-                color: "#0047ab"
-            }
-        };
+        const paragraph = "啊，我終於找到一片最漂亮的樹葉了！它像一顆心，又像老師的笑臉。我把樹葉貼在一張紙上，再寫上祝福，做成一張感謝卡，送給我最愛的老師。";
+        let currentHero = 'im';
+        let writer = null;
+        let activeChar = '';
+        let activeTile = null;
 
         function switchHero(type) {
-            activeHero = type;
-            document.getElementById('hero-status').innerText = heros[type].name + " MEMORY PROTOCOL";
-            document.getElementById('hero-status').style.color = heros[type].color;
+            currentHero = type;
+            document.getElementById('btn-im').className = type === 'im' ? 'h-btn active-im' : 'h-btn';
+            document.getElementById('btn-cap').className = type === 'cap' ? 'h-btn active-cap' : 'h-btn';
+            document.getElementById('msg-brief').style.color = type === 'im' ? 'var(--im-gold)' : '#fff';
+            document.getElementById('practice-title').style.color = type === 'im' ? 'var(--im-gold)' : 'var(--cap-blue)';
+            document.getElementById('modal-frame').style.borderColor = type === 'im' ? 'var(--im-red)' : 'var(--cap-blue)';
         }
 
-        const container = document.getElementById('sentence-container');
-        fullText.split('').forEach(char => {
-            const btn = document.createElement('div');
-            btn.innerText = char;
-            btn.className = 'char-btn';
-            btn.onclick = () => {
-                if (!btn.classList.contains('revealed')) {
-                    btn.classList.add('revealed'); // First click: Reveal (Flashcard effect)
+        function initBoard() {
+            const board = document.getElementById('board');
+            paragraph.split('').forEach((char, idx) => {
+                if (/[，。！、]/.test(char)) {
+                    const s = document.createElement('span');
+                    s.className = 'punc';
+                    s.innerText = char;
+                    board.appendChild(s);
                 } else {
-                    openModal(char); // Second click: Practice
+                    const unit = document.createElement('div');
+                    unit.className = 'word-unit';
+                    
+                    const starDiv = document.createElement('div');
+                    starDiv.className = 'star-count';
+                    starDiv.id = `stars-${idx}`;
+                    
+                    const tile = document.createElement('div');
+                    tile.className = 'char-tile';
+                    tile.innerText = char;
+                    tile.onclick = () => handleTileClick(tile, char, idx);
+                    
+                    unit.appendChild(starDiv);
+                    unit.appendChild(tile);
+                    board.appendChild(unit);
                 }
-            };
-            container.appendChild(btn);
-        });
-
-        function openModal(char) {
-            const modal = document.getElementById('practice-modal');
-            document.getElementById('chibi-hero').src = heros[activeHero].chibi;
-            document.getElementById('success-msg').style.display = 'none';
-            modal.style.display = 'flex';
-            
-            document.getElementById('target-char-container').innerHTML = '';
-            writerInstance = HanziWriter.create('target-char-container', char, {
-                width: 200, height: 200, padding: 15,
-                strokeColor: '#202020',
-                radicalColor: heros[activeHero].color,
-                drawingWidth: 20
             });
         }
 
-        function startPractice(showOutline) {
-            if (showOutline) {
-                writerInstance.showOutline();
-                document.getElementById('status-text').innerText = "Follow the guide...";
+        function handleTileClick(tile, char, idx) {
+            if (!tile.classList.contains('revealed')) {
+                tile.classList.add('revealed');
             } else {
-                writerInstance.hideOutline(); // This forces memory!
-                document.getElementById('status-text').innerText = "🧠 GHOST MODE: Draw from memory!";
+                openPractice(char, tile, idx);
             }
+        }
+
+        function openPractice(char, tile, idx) {
+            activeChar = char;
+            activeTile = tile;
+            document.getElementById('practice-modal').style.display = 'flex';
+            document.getElementById('writer-canvas').innerHTML = '';
             
-            writerInstance.quiz({
-                onComplete: () => {
-                    document.getElementById('success-msg').style.display = 'block';
-                    document.getElementById('status-text').innerText = "";
+            writer = HanziWriter.create('writer-canvas', char, {
+                width: 250, height: 250, padding: 15,
+                strokeColor: '#202020',
+                radicalColor: currentHero === 'im' ? '#e62429' : '#0047ab',
+                drawingWidth: 25,
+                showOutline: true
+            });
+            writer.animateCharacter();
+        }
+
+        function runQuiz(isGuide) {
+            if (!isGuide) {
+                writer.hideOutline();
+                document.getElementById('hint-text').innerText = "SYSTEM OFFLINE: USE YOUR BRAIN!";
+            } else {
+                writer.showOutline();
+                document.getElementById('hint-text').innerText = "Follow the lights, kid.";
+            }
+
+            writer.quiz({
+                onComplete: (summary) => {
+                    if (!isGuide && summary.totalMistakes < 3) {
+                        activeTile.classList.add('mastered');
+                        const starId = activeTile.id.replace('tile','stars');
+                        activeTile.parentElement.querySelector('.star-count').innerText = "⭐⭐⭐🏆";
+                        alert(currentHero === 'im' ? "Tony: Data uploaded to memory. Perfect!" : "Cap: I knew you could do it, Soldier!");
+                    } else if (isGuide) {
+                        activeTile.parentElement.querySelector('.star-count').innerText = "⭐";
+                    }
+                    setTimeout(closeModal, 500);
                 }
             });
         }
 
         function closeModal() { document.getElementById('practice-modal').style.display = 'none'; }
-        switchHero('im');
+
+        initBoard();
     </script>
 </body>
 </html>
